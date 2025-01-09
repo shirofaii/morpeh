@@ -7,7 +7,11 @@
 
 namespace Scellecs.Morpeh {
     using System;
+    using System.Buffers;
+    using System.IO;
+    using System.IO.Pipes;
     using System.Runtime.CompilerServices;
+    using System.Runtime.Serialization;
     using Collections;
     using JetBrains.Annotations;
     using Unity.IL2CPP.CompilerServices;
@@ -341,6 +345,33 @@ namespace Scellecs.Morpeh {
             
             return this.map.length != 0;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+        [Il2CppSetOption(Option.NullChecks, false)]
+        public void Save(BinaryWriter writer) {
+            this.world.ThreadSafetyCheck();
+            
+            for (var i = 0; i < Length; ++i) {
+                 writer.Write(this.map.GetKeyBySlotIndex(i));
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+        [Il2CppSetOption(Option.NullChecks, false)]
+        public void Load(BinaryReader reader, int capacity) {
+            this.world.ThreadSafetyCheck();
+
+            var size = reader.ReadInt32();
+            this.map = new IntSlotMap(capacity);
+            for (var i = 0; i < size; ++i) {
+                var id = reader.ReadInt32();
+                this.map.TakeSlot(id, out _);
+                this.world.TransientChangeAddComponent(id, ref this.typeInfo);
+            }
+        }
+
         
         public void Dispose() {
             if (this.IsDisposed) {
