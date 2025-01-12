@@ -159,6 +159,16 @@ namespace Scellecs.Morpeh {
             InvalidGetOperationException.ThrowMissing(entity, this.type);
             return ref this.empty;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref T GetById(int id) { 
+            if (this.map.TryGetIndex(id, out var dataIndex)) {
+                return ref this.data[dataIndex];
+            }
+            
+            return ref this.empty;
+        }
+
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Get(Entity entity, out bool exist) {
@@ -417,6 +427,16 @@ namespace Scellecs.Morpeh {
             e.data = this.data;
             return e;
         }
+
+        public EntityIdEnumerator Ids {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                EntityIdEnumerator e;
+                e.mapEnumerator = this.map.GetEnumerator();
+                return e;
+            }
+        }
+
         
         [Il2CppSetOption(Option.NullChecks, false)]
         [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
@@ -432,6 +452,26 @@ namespace Scellecs.Morpeh {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
                 get => ref this.data[this.mapEnumerator.Current];
             }
+        }
+        
+        [Il2CppSetOption(Option.NullChecks, false)]
+        [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+        [Il2CppSetOption(Option.DivideByZeroChecks, false)]
+        public struct EntityIdEnumerator {
+            internal IntSlotMap.Enumerator mapEnumerator;
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public bool MoveNext() => this.mapEnumerator.MoveNext();
+
+            public int Current {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => mapEnumerator.GetCurrentEntityId();
+            }
+            
+            public void Dispose() {}
+            public void Reset() {}
+
+            public EntityIdEnumerator GetEnumerator() => this;
         }
     }
 }
