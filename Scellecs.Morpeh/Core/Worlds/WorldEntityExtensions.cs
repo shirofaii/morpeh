@@ -23,6 +23,11 @@
             ++world.entitiesCount;
             return world.GetEntityAtIndex(id);
         }
+
+        [PublicAPI]
+        public static Entity GetEntity(this World world, int id) {
+            return id == 0 ? default : world.GetEntityAtIndex(id);
+        }
         
         [MethodImpl(MethodImplOptions.NoInlining)]
         internal static void ExpandEntities(this World world) {
