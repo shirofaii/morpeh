@@ -22,10 +22,6 @@ namespace Scellecs.Morpeh {
             value = ((id & 0xFFFFFFFFL) << 32) | ((generation & 0xFFFFL) << 16) | ((worldId & 0xFFL) << 8) | (worldGeneration & 0xFFL);
         }
 
-        public Entity(int id) {
-            value = (id & 0xFFFFFFFFL) << 32;
-        }
-
         [ShowInInspector]
         public int Id {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
