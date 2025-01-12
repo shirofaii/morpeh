@@ -365,6 +365,7 @@ namespace Scellecs.Morpeh {
 
             var size = reader.ReadInt32();
             this.map = new IntSlotMap(capacity);
+            this.data = new T[capacity];
             for (var i = 0; i < size; ++i) {
                 var id = reader.ReadInt32();
                 this.map.TakeSlot(id, out _);

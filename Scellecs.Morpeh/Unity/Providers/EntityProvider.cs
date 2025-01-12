@@ -52,12 +52,13 @@ namespace Scellecs.Morpeh.Providers {
             return false;
         }
 
-        protected void CheckEntityInitialization() {
+        public void SetEntity(Entity entity = default) {
             if (this.cachedEntity.IsNullOrDisposed()) {
                 var instanceId = this.gameObject.GetInstanceID();
                 if (map.TryGetValue(instanceId, out var item)) {
                     if (item.entity.IsNullOrDisposed()) {
-                        this.cachedEntity = item.entity = World.Default.CreateEntity();
+                        var e = entity == default ? World.Default.CreateEntity() : entity;
+                        this.cachedEntity = item.entity = e;
                     }
                     else {
                         this.cachedEntity = item.entity;
@@ -66,11 +67,20 @@ namespace Scellecs.Morpeh.Providers {
                     map.Set(instanceId, item, out _);
                 }
                 else {
-                    this.cachedEntity = item.entity = World.Default.CreateEntity();
+                    var e = entity == default ? World.Default.CreateEntity() : entity;
+                    this.cachedEntity = item.entity = e;
                     item.refCounter   = 1;
                     map.Add(instanceId, item, out _);
                 }
             }
+            
+            this.PreInitialize();
+            this.Initialize();
+            
+#if UNITY_EDITOR
+            this.entityViewer.world = World.Default;
+            this.entityViewer.entity = cachedEntity;
+#endif
         }
 
         protected virtual void OnEnable() {
@@ -78,15 +88,7 @@ namespace Scellecs.Morpeh.Providers {
                 return;
             }
             
-            this.CheckEntityInitialization();
-            
-            this.PreInitialize();
-            this.Initialize();
-            
-#if UNITY_EDITOR
-            this.entityViewer.world = World.Default;
-            this.entityViewer.entity = this.Entity;
-#endif
+            this.SetEntity();
         }
 
         protected virtual void OnDisable() {
