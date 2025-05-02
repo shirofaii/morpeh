@@ -5,9 +5,9 @@ namespace Scellecs.Morpeh.Utils.Editor {
         internal readonly Entity entity;
         internal readonly long archetypeHash;
 
-        internal World World => this.entity.GetWorld();
-        internal bool IsValid => !this.World.IsNullOrDisposed() && !this.World.IsDisposed(this.entity);
-        internal Archetype Archetype => this.World.entities[this.entity.Id].currentArchetype;
+        internal World World => World.Default;
+        internal bool IsValid => !this.World.IsDisposed && !this.World.EntityIsDisposed(this.entity);
+        internal Archetype Archetype => this.World.entities[this.entity.id].currentArchetype;
 
         public EntityHandle(Entity entity, long archetypeHash) {
             this.entity = entity;
@@ -27,7 +27,7 @@ namespace Scellecs.Morpeh.Utils.Editor {
         }
 
         public override string ToString() {
-            return $"{entity.Id}:{entity.Generation}, IsValid:{IsValid}, archetypeHash:{archetypeHash}";
+            return $"{entity.id}:{entity.generation}, IsValid:{IsValid}, archetypeHash:{archetypeHash}";
         }
     }
 }

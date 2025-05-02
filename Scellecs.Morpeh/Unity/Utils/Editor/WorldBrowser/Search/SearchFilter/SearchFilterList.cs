@@ -103,7 +103,7 @@ namespace Scellecs.Morpeh.Utils.Editor {
 
         private int IndexOf(EntityHandle handle) {
             if (handle.IsValid) {
-                var entityData = handle.World.entities[handle.entity.Id];
+                var entityData = handle.World.entities[handle.entity.id];
                 var hash = entityData.currentArchetype.hash.GetValue();
                 var indexInArchetype = entityData.indexInCurrentArchetype;
 

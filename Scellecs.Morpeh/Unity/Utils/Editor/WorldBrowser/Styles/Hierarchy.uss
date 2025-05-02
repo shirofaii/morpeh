@@ -5,7 +5,6 @@
 
 .hierarchy-list-view-left-half, 
 .hierarchy-list-view-right-half {
-    width: 50%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -13,10 +12,12 @@
 }
 
 .hierarchy-list-view-left-half {
+    width: 85%;
     background-color: rgba(111, 0, 128, 0.2);
 }
 
 .hierarchy-list-view-right-half {
+    width: 15%;
     background-color: rgba(75, 0, 155, 0.2);
 }
 
@@ -32,40 +33,4 @@
     justify-content: space-between;
     width: 100%;
     padding: 4px;
-}
-
-.hierarchy-world-selector-dropdown-world-label {
-    transform-origin: center;
-    -unity-font-style: bold;
-}
-
-.world-selector-list-item {
-    flex-direction: row;
-    padding: 2px 4px;
-    height: 20px;
-}
-
-.world-selector-list-item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.world-selector-list-item.selected {
-    background-color: rgba(68, 138, 255, 0.7);
-}
-
-.world-selector-list-item__label {
-    -unity-text-align: middle-left;
-}
-
-.world-selector-list-item__checkmark {
-    width: 16px;
-    height: 16px;
-    margin-right: 4px;
-    background-image: none;
-    -unity-background-scale-mode: scale-to-fit;
-    flex-shrink: 0; 
-}
-
-.world-selector-list-item__checkmark.visible {
-    background-image: resource("d_Valid");
 }

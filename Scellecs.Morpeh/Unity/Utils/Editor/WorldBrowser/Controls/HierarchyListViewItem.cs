@@ -29,8 +29,8 @@ namespace Scellecs.Morpeh.Utils.Editor {
         }
 
         internal void Bind(EntityHandle entityHandle) {
-            this.leftLabel.text = $"Entity: {entityHandle.entity.Id} : {entityHandle.entity.Generation}";
-            this.rightLabel.text = $"World: {entityHandle.World.identifier} : {entityHandle.World.generation}";
+            this.leftLabel.text = $"";
+            this.rightLabel.text = $"{entityHandle.entity.id}:{entityHandle.entity.generation}";
         }
 
         internal void Reset() {
