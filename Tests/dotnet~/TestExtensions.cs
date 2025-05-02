@@ -42,11 +42,11 @@ public static class TestExtensions {
     }
     
     internal static ArchetypeHash ArchetypeOf(this World world, Entity entity) {
-        if (world.IsDisposed(entity)) {
+        if (world.EntityIsDisposed(entity)) {
             return default(ArchetypeHash);
         }
 
-        var archetype = world.entities[entity.Id].currentArchetype;
+        var archetype = world.entities[entity.id].currentArchetype;
         return archetype?.hash ?? default(ArchetypeHash);
     }
 }

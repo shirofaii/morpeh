@@ -34,10 +34,10 @@ namespace Scellecs.Morpeh {
                 ArrayHelpers.Grow(ref World.worldsGens, newCapacity);
             }
 
-            world.identifier        = id;
-            world.generation        = World.worldsGens[id];
-            world.freeEntityIDs     = new IntStack();
-            world.stashes           = new IStash[WorldConstants.DEFAULT_STASHES_CAPACITY];
+            world.identifier    = (byte)id;
+            world.generation    = World.worldsGens[id];
+            world.freeEntityIDs = new IntStack();
+            world.stashes       = new IStash[WorldConstants.DEFAULT_STASHES_CAPACITY];
 
             world.entitiesCount    = 0;
             world.entitiesLength   = 0;
@@ -348,7 +348,7 @@ namespace Scellecs.Morpeh {
                 var index = entityData.indexInCurrentArchetype;
                 entityData.currentArchetype.RemoveEntityAtIndex(index);
                 
-                var entityIndex = entityData.currentArchetype.entities[index].Id;
+                var entityIndex = entityData.currentArchetype.entities[index].id;
                 world.entities[entityIndex].indexInCurrentArchetype = index;
                 
                 world.TryScheduleArchetypeForRemoval(entityData.currentArchetype);
@@ -482,7 +482,7 @@ namespace Scellecs.Morpeh {
                 var index = entityData.indexInCurrentArchetype;
                 entityData.currentArchetype.RemoveEntityAtIndex(index);
                 
-                var entityIndex = entityData.currentArchetype.entities[index].Id;
+                var entityIndex = entityData.currentArchetype.entities[index].id;
                 world.entities[entityIndex].indexInCurrentArchetype = index;
                 
                 world.TryScheduleArchetypeForRemoval(entityData.currentArchetype);
@@ -534,14 +534,6 @@ namespace Scellecs.Morpeh {
             if (world.threadIdLock != currentThread) {
                 ThreadSafetyCheckFailedException.Throw(currentThread, world.threadIdLock);
             }
-        }
-        
-        [PublicAPI]
-        public static AspectFactory<T> GetAspectFactory<T>(this World world) where T : struct, IAspect {
-            world.ThreadSafetyCheck();
-            var aspectFactory = default(AspectFactory<T>);
-            aspectFactory.value.OnGetAspectFactory(world);
-            return aspectFactory;
         }
         
         [PublicAPI]

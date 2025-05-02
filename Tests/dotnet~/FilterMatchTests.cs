@@ -25,7 +25,7 @@ public class FilterMatchTests {
         }
         Assert.Equal(0, filter.archetypesLength);
         
-        entity.AddComponent<Test1>();
+        this.world.GetStash<Test1>().Set(entity);
         this.world.Commit();
         
         Assert.Equal(1, filter.GetLengthSlow());
@@ -34,7 +34,7 @@ public class FilterMatchTests {
         }
         Assert.Equal(1, filter.archetypesLength);
         
-        entity.RemoveComponent<Test1>();
+        this.world.GetStash<Test1>().Remove(entity);
         this.world.Commit();
         
         foreach (var _ in filter) {
@@ -54,8 +54,8 @@ public class FilterMatchTests {
         }
         Assert.Equal(0, filter.archetypesLength);
         
-        entity.AddComponent<Test1>();
-        entity.AddComponent<Test2>();
+        this.world.GetStash<Test1>().Set(entity);
+        this.world.GetStash<Test2>().Set(entity);
         this.world.Commit();
         
         Assert.Equal(1, filter.GetLengthSlow());
@@ -64,7 +64,7 @@ public class FilterMatchTests {
         }
         Assert.Equal(1, filter.archetypesLength);
         
-        entity.RemoveComponent<Test1>();
+        this.world.GetStash<Test1>().Remove(entity);
         this.world.Commit();
         
         foreach (var _ in filter) { 
@@ -84,8 +84,8 @@ public class FilterMatchTests {
         }
         Assert.Equal(0, filter.archetypesLength);
         
-        entity.AddComponent<Test1>();
-        entity.AddComponent<Test2>();
+        this.world.GetStash<Test1>().Set(entity);
+        this.world.GetStash<Test2>().Set(entity);
         this.world.Commit();
         
         Assert.Equal(1, filter.GetLengthSlow());
@@ -94,8 +94,8 @@ public class FilterMatchTests {
         }
         Assert.Equal(1, filter.archetypesLength);
         
-        entity.RemoveComponent<Test1>();
-        entity.RemoveComponent<Test2>();
+        this.world.GetStash<Test1>().Remove(entity);
+        this.world.GetStash<Test2>().Remove(entity);
         this.world.Commit();
         
         foreach (var _ in filter) {
@@ -115,7 +115,7 @@ public class FilterMatchTests {
         }
         Assert.Equal(0, filter.archetypesLength);
         
-        entity.AddComponent<Test1>();
+        this.world.GetStash<Test1>().Set(entity);
         this.world.Commit();
         
         foreach (var _ in filter) {
@@ -123,7 +123,7 @@ public class FilterMatchTests {
         }
         Assert.Equal(0, filter.archetypesLength);
         
-        entity.AddComponent<Test2>();
+        this.world.GetStash<Test2>().Set(entity);
         this.world.Commit();
         
         Assert.Equal(1, filter.GetLengthSlow());
@@ -132,7 +132,7 @@ public class FilterMatchTests {
         }
         Assert.Equal(1, filter.archetypesLength);
         
-        entity.RemoveComponent<Test1>();
+        this.world.GetStash<Test1>().Remove(entity);
         this.world.Commit();
         
         foreach (var _ in filter)
@@ -141,7 +141,7 @@ public class FilterMatchTests {
         }
         Assert.Equal(0, filter.archetypesLength);
         
-        entity.AddComponent<Test1>();
+        this.world.GetStash<Test1>().Set(entity);
         this.world.Commit();
         
         Assert.Equal(1, filter.GetLengthSlow());
@@ -150,7 +150,7 @@ public class FilterMatchTests {
         }
         Assert.Equal(1, filter.archetypesLength);
         
-        entity.RemoveComponent<Test2>();
+        this.world.GetStash<Test2>().Remove(entity);
         this.world.Commit();
         
         foreach (var _ in filter) {
@@ -170,7 +170,7 @@ public class FilterMatchTests {
         }
         Assert.Equal(0, filter.archetypesLength);
         
-        entity.AddComponent<Test1>();
+        this.world.GetStash<Test1>().Set(entity);
         this.world.Commit();
         
         foreach (var _ in filter) {
@@ -178,7 +178,7 @@ public class FilterMatchTests {
         }
         Assert.Equal(0, filter.archetypesLength);
         
-        entity.AddComponent<Test2>();
+        this.world.GetStash<Test2>().Set(entity);
         this.world.Commit();
         
         Assert.Equal(1, filter.GetLengthSlow());
@@ -187,7 +187,7 @@ public class FilterMatchTests {
         }
         Assert.Equal(1, filter.archetypesLength);
         
-        entity.AddComponent<Test3>();
+        this.world.GetStash<Test3>().Set(entity);
         this.world.Commit();
         
         Assert.Equal(1, filter.GetLengthSlow());
@@ -196,7 +196,7 @@ public class FilterMatchTests {
         }
         Assert.Equal(1, filter.archetypesLength);
         
-        entity.RemoveComponent<Test1>();
+        this.world.GetStash<Test1>().Remove(entity);
         this.world.Commit();
         
         foreach (var _ in filter) {
@@ -204,7 +204,7 @@ public class FilterMatchTests {
         }
         Assert.Equal(0, filter.archetypesLength);
         
-        entity.AddComponent<Test1>();
+        this.world.GetStash<Test1>().Set(entity);
         this.world.Commit();
         
         Assert.Equal(1, filter.GetLengthSlow());
@@ -213,7 +213,7 @@ public class FilterMatchTests {
         }
         Assert.Equal(1, filter.archetypesLength);
         
-        entity.RemoveComponent<Test2>();
+        this.world.GetStash<Test2>().Remove(entity);
         this.world.Commit();
         
         foreach (var _ in filter) {
@@ -233,7 +233,7 @@ public class FilterMatchTests {
         }
         Assert.Equal(0, filter.archetypesLength);
         
-        entity.AddComponent<Test1>();
+        this.world.GetStash<Test1>().Set(entity);
         this.world.Commit();
         
         Assert.Equal(1, this.world.ArchetypeLengthOf(default(ArchetypeHash).With<Test1>()));
@@ -242,7 +242,7 @@ public class FilterMatchTests {
         }
         Assert.Equal(0, filter.archetypesLength);
         
-        entity.AddComponent<Test2>();
+        this.world.GetStash<Test2>().Set(entity);
         this.world.Commit();
 
         Assert.Equal(1, this.world.ArchetypeLengthOf(default(ArchetypeHash).With<Test1>().With<Test2>()));
@@ -252,7 +252,7 @@ public class FilterMatchTests {
         }
         Assert.Equal(1, filter.archetypesLength);
         
-        entity.RemoveComponent<Test2>();
+        this.world.GetStash<Test2>().Remove(entity);
         this.world.Commit();
 
         Assert.Equal(1, this.world.ArchetypeLengthOf(default(ArchetypeHash).With<Test1>()));
@@ -264,7 +264,7 @@ public class FilterMatchTests {
         }
         Assert.Equal(0, filter.archetypesLength);
         
-        entity.AddComponent<Test2>();
+        this.world.GetStash<Test2>().Set(entity);
         this.world.Commit();
         
         Assert.Equal(0, this.world.ArchetypeLengthOf(default(ArchetypeHash).With<Test1>()));
@@ -275,7 +275,7 @@ public class FilterMatchTests {
         }
         Assert.Equal(1, filter.archetypesLength);
         
-        entity.RemoveComponent<Test1>();
+        this.world.GetStash<Test1>().Remove(entity);
         this.world.Commit();
         
         Assert.Equal(0, this.world.ArchetypeLengthOf(default(ArchetypeHash).With<Test1>()));
@@ -290,7 +290,7 @@ public class FilterMatchTests {
     [Fact]
     public void FilterLateCreationMatches() {
         var entity = this.world.CreateEntity();
-        entity.AddComponent<Test1>();
+        this.world.GetStash<Test1>().Set(entity);
         this.world.Commit();
         
         var filter = this.world.Filter.With<Test1>().Build();
@@ -305,10 +305,10 @@ public class FilterMatchTests {
     [Fact]
     public void FilterSingleEntityDisposalRemovesMatch() {
         var entity = this.world.CreateEntity();
-        entity.AddComponent<Test1>();
+        this.world.GetStash<Test1>().Set(entity);
         this.world.Commit();
         
-        entity.AddComponent<Test2>();
+        this.world.GetStash<Test2>().Set(entity);
         this.world.Commit();
         
         var filter = this.world.Filter.With<Test1>().With<Test2>().Build();
@@ -319,7 +319,7 @@ public class FilterMatchTests {
         }
         Assert.Equal(1, filter.archetypesLength);
         
-        entity.Dispose();
+        this.world.RemoveEntity(entity);
         this.world.Commit();
         
         foreach (var _ in filter) {
@@ -335,18 +335,18 @@ public class FilterMatchTests {
         
         for (var i = 0; i < entitiesCount; i++) {
             entities[i] = this.world.CreateEntity();
-            entities[i].AddComponent<Test1>();
-            entities[i].AddComponent<Test2>();
+            this.world.GetStash<Test1>().Set(entities[i]);
+            this.world.GetStash<Test2>().Set(entities[i]);
             
             this.world.Commit();
             
             // We do this to ensure that there's no duplication in archetypes
             
-            entities[i].RemoveComponent<Test1>();
-            entities[i].RemoveComponent<Test2>();
+            this.world.GetStash<Test1>().Remove(entities[i]);
+            this.world.GetStash<Test2>().Remove(entities[i]);
             
-            entities[i].AddComponent<Test1>();
-            entities[i].AddComponent<Test2>();
+            this.world.GetStash<Test1>().Set(entities[i]);
+            this.world.GetStash<Test2>().Set(entities[i]);
             
             this.world.Commit();
         }
@@ -361,7 +361,7 @@ public class FilterMatchTests {
         Assert.Equal(1, filter.archetypesLength);
         
         for (var i = 0; i < entitiesCount; i++) {
-            entities[i].Dispose();
+            this.world.RemoveEntity(entities[i]);
             this.world.Commit();
         }
         
@@ -377,16 +377,16 @@ public class FilterMatchTests {
         
         for (var i = 0; i < 8; i++) {
             var entity = this.world.CreateEntity();
-            entity.AddComponent<Test1>();
-            entity.AddComponent<Test2>();
+            this.world.GetStash<Test1>().Set(entity);
+            this.world.GetStash<Test2>().Set(entity);
         }
         
         this.world.Commit();
         
         Assert.Equal(8, filter.GetLengthSlow());
         foreach (var entity in filter) {
-            entity.Dispose();
-            Assert.True(this.world.IsDisposed(entity));
+            this.world.RemoveEntity(entity);
+            Assert.True(this.world.EntityIsDisposed(entity));
         }
         this.world.Commit();
         
@@ -402,17 +402,17 @@ public class FilterMatchTests {
         
         for (var i = 0; i < 8; i++) {
             var entity = this.world.CreateEntity();
-            entity.AddComponent<Test1>();
-            entity.AddComponent<Test2>();
+            this.world.GetStash<Test1>().Set(entity);
+            this.world.GetStash<Test2>().Set(entity);
         }
         
         this.world.Commit();
         
         Assert.Equal(8, filter.GetLengthSlow());
         foreach (var entity in filter) {
-            entity.RemoveComponent<Test1>();
-            entity.RemoveComponent<Test2>();
-            Assert.False(this.world.IsDisposed(entity));
+            this.world.GetStash<Test1>().Remove(entity);
+            this.world.GetStash<Test2>().Remove(entity);
+            Assert.False(this.world.EntityIsDisposed(entity));
         }
         this.world.Commit();
         
@@ -428,17 +428,17 @@ public class FilterMatchTests {
         
         for (var i = 0; i < 8; i++) {
             var entity = this.world.CreateEntity();
-            entity.AddComponent<Test1>();
-            entity.AddComponent<Test2>();
+            this.world.GetStash<Test1>().Set(entity);
+            this.world.GetStash<Test2>().Set(entity);
         }
         
         this.world.Commit();
         Assert.Equal(8, filter.GetLengthSlow());
         
         foreach (var entity in filter) {
-            entity.RemoveComponent<Test1>();
-            entity.AddComponent<Test1>();
-            Assert.False(this.world.IsDisposed(entity));
+            this.world.GetStash<Test1>().Remove(entity);
+            this.world.GetStash<Test1>().Set(entity);
+            Assert.False(this.world.EntityIsDisposed(entity));
         }
         
         this.world.Commit();
@@ -452,8 +452,8 @@ public class FilterMatchTests {
         
         for (var i = 0; i < 8; i++) {
             var entity = this.world.CreateEntity();
-            entity.AddComponent<Test1>();
-            entity.AddComponent<Test2>();
+            this.world.GetStash<Test1>().Set(entity);
+            this.world.GetStash<Test2>().Set(entity);
         }
         
         this.world.Commit();
@@ -461,9 +461,9 @@ public class FilterMatchTests {
         Assert.Equal(0, filterWithTest3.GetLengthSlow());
         
         foreach (var entity in filter) {
-            entity.AddComponent<Test3>();
-            entity.RemoveComponent<Test3>();
-            Assert.False(this.world.IsDisposed(entity));
+            this.world.GetStash<Test3>().Set(entity);
+            this.world.GetStash<Test3>().Remove(entity);
+            Assert.False(this.world.EntityIsDisposed(entity));
         }
         
         this.world.Commit();
@@ -483,7 +483,7 @@ public class FilterMatchTests {
         var f8 = this.world.Filter.With<Test1>().Without<Test2>().Without<Test3>().Without<Test4>().Without<Test5>().Without<Test6>().Without<Test7>().Without<Test8>().Build();
         
         var entity = this.world.CreateEntity();
-        entity.AddComponent<Test1>();
+        this.world.GetStash<Test1>().Set(entity);
         
         this.world.Commit();
         
@@ -496,7 +496,7 @@ public class FilterMatchTests {
         Assert.Equal(1, f7.GetLengthSlow());
         Assert.Equal(1, f8.GetLengthSlow());
         
-        entity.RemoveComponent<Test1>();
+        this.world.GetStash<Test1>().Remove(entity);
         this.world.Commit();
         
         Assert.Equal(0, f1.GetLengthSlow());

@@ -22,7 +22,7 @@ public class EntityIdReuseTests {
         
         for (var i = 0; i < count; i++) {
             entities[i] = world.CreateEntity();
-            Assert.Equal(i + 1, entities[i].Id);
+            Assert.Equal(i + 1, entities[i].id);
         }
 
         for (var i = 0; i < count; i++) {
@@ -32,7 +32,7 @@ public class EntityIdReuseTests {
         world.Commit();
         
         for (var i = 0; i < count; i++) {
-            Assert.Equal(i + 1, world.CreateEntity().Id);
+            Assert.Equal(i + 1, world.CreateEntity().id);
         }
     }
     
@@ -46,7 +46,7 @@ public class EntityIdReuseTests {
         
         for (var i = 0; i < count; i++) {
             entities[i] = world.CreateEntity();
-            Assert.Equal(i + 1, entities[i].Id);
+            Assert.Equal(i + 1, entities[i].id);
         }
 
         for (var i = 0; i < count; i++) {
@@ -54,7 +54,7 @@ public class EntityIdReuseTests {
         }
         
         for (var i = 0; i < count; i++) {
-            Assert.Equal(count + i + 1, world.CreateEntity().Id);
+            Assert.Equal(count + i + 1, world.CreateEntity().id);
         }
     }
 }

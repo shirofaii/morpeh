@@ -51,11 +51,11 @@
                 typeInfo = ComponentId<T>.info,
                 type = typeof(T),
                 entityGetComponentBoxed = (entity) => {
-                    var stash = entity.GetWorld().GetStash<T>();
+                    var stash = World.GetStash<T>();
                     return stash.Has(entity) ? stash.Get(entity) : default;
                 },
-                entitySetComponentBoxed = (entity, component) => entity.GetWorld().GetStash<T>().Set(entity, (T)component),
-                entityRemoveComponent = (entity) => entity.GetWorld().GetStash<T>().Remove(entity),
+                entitySetComponentBoxed = (entity, component) => World.GetStash<T>().Set(entity, (T)component),
+                entityRemoveComponent = (entity) => World.GetStash<T>().Remove(entity),
                 isMarker = typeof(T).GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Length == 0,
             };
 

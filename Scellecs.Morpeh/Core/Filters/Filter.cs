@@ -230,7 +230,7 @@ namespace Scellecs.Morpeh {
                 return false;
             }
             
-            var archetype = this.world.entities[entity.Id].currentArchetype;
+            var archetype = this.world.entities[entity.id].currentArchetype;
             return archetype != null && this.archetypeHashesMap.Has(archetype.hash.GetValue());
         }
         
