@@ -56,5 +56,11 @@ namespace Scellecs.Morpeh {
         public override string ToString() {
             return $"{this.id}:{this.generation}";
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Entity Create() => World.Default.CreateEntity();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Remove() => World.Default.RemoveEntity(this);
     }
 }
