@@ -18,6 +18,17 @@ namespace Scellecs.Morpeh {
     [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     public sealed class Filter {
+
+        [PublicAPI]
+        public FilterBuilder With<T>() where T : struct, IComponent {
+            return FilterBuilder.Create(World.Default).With<T>();
+        }
+
+        [PublicAPI]
+        public FilterBuilder Without<T>() where T : struct, IComponent {
+            return FilterBuilder.Create(World.Default).Without<T>();
+        }
+        
 #if MORPEH_BURST
         [Il2CppSetOption(Option.NullChecks, false)]
         [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
