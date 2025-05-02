@@ -61,10 +61,12 @@ namespace Scellecs.Morpeh {
         public static Entity Create() => World.Default.CreateEntity();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Entity Create(string name) => World.Default.CreateEntity(name);
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Remove() => World.Default.RemoveEntity(this);
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsDisposed() => World.Default.EntityIsDisposed(this);
-        
     }
 }
