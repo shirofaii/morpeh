@@ -16,7 +16,7 @@ namespace Scellecs.Morpeh {
     [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     public readonly struct Entity : IEquatable<Entity> {
-        internal readonly int id;
+        public readonly int id;
         internal readonly int generation;
         
         public Entity(int id, int generation) {
@@ -62,5 +62,9 @@ namespace Scellecs.Morpeh {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Remove() => World.Default.RemoveEntity(this);
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsDisposed() => World.Default.EntityIsDisposed(this);
+        
     }
 }

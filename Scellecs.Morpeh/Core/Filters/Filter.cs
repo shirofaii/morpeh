@@ -20,12 +20,12 @@ namespace Scellecs.Morpeh {
     public sealed class Filter {
 
         [PublicAPI]
-        public FilterBuilder With<T>() where T : struct, IComponent {
+        public static FilterBuilder With<T>() where T : struct, IComponent {
             return FilterBuilder.Create(World.Default).With<T>();
         }
 
         [PublicAPI]
-        public FilterBuilder Without<T>() where T : struct, IComponent {
+        public static FilterBuilder Without<T>() where T : struct, IComponent {
             return FilterBuilder.Create(World.Default).Without<T>();
         }
         

@@ -12,7 +12,7 @@ namespace Scellecs.Morpeh.Utils.Editor {
         internal bool IsMarker => this.internalTypeDefinition.isMarker;
         internal string FullName => this.internalTypeDefinition.type.FullName;
         internal string Name => this.niceName;
-        internal bool IsValid => !this.entity.GetWorld().IsNullOrDisposed() && !this.entity.GetWorld().IsDisposed(this.entity);
+        internal bool IsValid => !World.Default.IsNullOrDisposed() && !this.entity.IsDisposed();
         internal int TypeId => this.internalTypeDefinition.typeInfo.id;
 
         [HideLabel]

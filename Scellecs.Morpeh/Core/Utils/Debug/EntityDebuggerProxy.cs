@@ -14,9 +14,9 @@ namespace Scellecs.Morpeh {
         public IComponent[] Components => GetComponents();
 
         private IComponent[] GetComponents() {
-            var world = this.entity.GetWorld();
-            if (world != null && !world.IsDisposed(this.entity)) {
-                var entityData = world.entities[this.entity.Id];
+            var world = World.Default;
+            if (world != null && !world.EntityIsDisposed(this.entity)) {
+                var entityData = world.entities[this.entity.id];
                 var archetype = entityData.currentArchetype;
                 var addedComponents = entityData.addedComponents;
                 var removedComponents = entityData.removedComponents;

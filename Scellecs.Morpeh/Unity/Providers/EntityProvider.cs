@@ -22,7 +22,7 @@ namespace Scellecs.Morpeh.Providers {
         [PropertyOrder(-1)]
         [ReadOnly]
 #endif
-        private int EntityID => this.cachedEntity.IsNullOrDisposed() == false ? this.cachedEntity.Id : -1;
+        private int EntityID => this.cachedEntity.IsDisposed() == false ? this.cachedEntity.id : -1;
 
         protected internal Entity cachedEntity;
 
@@ -53,10 +53,10 @@ namespace Scellecs.Morpeh.Providers {
         }
 
         public void SetEntity(Entity entity = default) {
-            if (this.cachedEntity.IsNullOrDisposed()) {
+            if (this.cachedEntity.IsDisposed()) {
                 var instanceId = this.gameObject.GetInstanceID();
                 if (map.TryGetValue(instanceId, out var item)) {
-                    if (item.entity.IsNullOrDisposed()) {
+                    if (item.entity.IsDisposed()) {
                         var e = entity == default ? World.Default.CreateEntity() : entity;
                         this.cachedEntity = item.entity = e;
                     }
