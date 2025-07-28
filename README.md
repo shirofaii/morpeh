@@ -1027,6 +1027,7 @@ Optimized lightweight implementation of a bit array, resizes significantly faste
 * [**Flappy Bird**](https://github.com/R1nge/MorpehECS_FlappyBird) by *R1nge*        
 * [**3D Asteroids**](https://github.com/R1nge/MorpehECS_3D_Asteroids) by *R1nge*    
 * [**Mobile Runner Hypercasual**](https://github.com/StinkySteak/unity-morpeh-hypercasual) by *StinkySteak*
+* [**First Person Shooter**](https://github.com/mixadze1/morpeh.example.shooter) by *mixadze1*
 
 ---
 
