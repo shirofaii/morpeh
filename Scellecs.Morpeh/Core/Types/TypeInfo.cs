@@ -6,7 +6,7 @@
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     public struct TypeInfo {
         internal TypeHash hash;
-        internal int id;
+        public int id;
         
         internal TypeInfo(TypeHash hash, int id) {
             this.id = id;

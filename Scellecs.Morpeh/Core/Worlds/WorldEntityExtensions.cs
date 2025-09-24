@@ -121,19 +121,16 @@
             return new Entity(entityId, world.entitiesGens[entityId]);
         }
         
-
+#if DEBUG
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void SetDebugLabel(this World world, int entityId, string label) {
-#if DEBUG
             world.entities[entityId].debugLabel = label;
-#endif
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetDebugLabel(this World world, int entityId) {
-#if DEBUG
             return world.entities[entityId].debugLabel;
-#endif
         }
+#endif
     }
 }
