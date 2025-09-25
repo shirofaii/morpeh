@@ -89,18 +89,6 @@ namespace Scellecs.Morpeh.Utils.Editor {
                         else if (InheritsFrom(type, typeof(IComponent))) {
                             SelectAndSaveIcon(monoImporter, iconC);
                         }
-                        else if (InheritsFrom(type, typeof(IFixedSystem))) {
-                            SelectAndSaveIcon(monoImporter, iconF);
-                        }
-                        else if (InheritsFrom(type, typeof(ILateSystem))) {
-                            SelectAndSaveIcon(monoImporter, iconL);
-                        }
-                        else if (InheritsFrom(type, typeof(ICleanupSystem))) {
-                            SelectAndSaveIcon(monoImporter, iconC);
-                        }
-                        else if (InheritsFrom(type, typeof(ISystem))) {
-                            SelectAndSaveIcon(monoImporter, iconU);
-                        }
                     }
                 }
 
