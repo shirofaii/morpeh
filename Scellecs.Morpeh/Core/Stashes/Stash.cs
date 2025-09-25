@@ -64,95 +64,14 @@ namespace Scellecs.Morpeh {
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T Add(Entity entity) {
-            this.world.ThreadSafetyCheck();
-            
-            if (this.world.IsDisposed(entity)) {
-                InvalidAddOperationException.ThrowDisposedEntity(entity, this.type);
-            }
-            
-            if (this.map.IsKeySet(entity.Id, out var slotIndex)) {
-                InvalidAddOperationException.ThrowAlreadyExists(entity, this.type);
-            } else {
-                slotIndex = this.map.TakeSlot(entity.Id, out var resized);
-                
-                if (resized) {
-                    ArrayHelpers.GrowNonInlined(ref this.data, this.map.capacity);
-#if MORPEH_DEBUG
-                    this.world.newMetrics.stashResizes++;
-#endif
-                }
-                
-                this.data[slotIndex] = default;
-                this.world.TransientChangeAddComponent(entity.Id, ref this.typeInfo);
-            }
-            
-            return ref this.data[slotIndex];
-        }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T Add(Entity entity, out bool exist) {
-            this.world.ThreadSafetyCheck();
-            
-            if (this.world.IsDisposed(entity)) {
-                InvalidAddOperationException.ThrowDisposedEntity(entity, this.type);
-            }
-            
-            if (!this.map.IsKeySet(entity.Id, out var slotIndex)) {
-                slotIndex = this.map.TakeSlot(entity.Id, out var resized);
-                
-                if (resized) {
-                    ArrayHelpers.GrowNonInlined(ref this.data, this.map.capacity);
-#if MORPEH_DEBUG
-                    this.world.newMetrics.stashResizes++;
-#endif
-                }
-                
-                this.data[slotIndex] = default;
-                this.world.TransientChangeAddComponent(entity.Id, ref this.typeInfo);
-                
-                exist = false;
-                return ref this.data[slotIndex];
-            }
-            
-            exist = true;
-            return ref this.empty;
-        }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Add(Entity entity, in T value) {
-            this.world.ThreadSafetyCheck();
-            
-            if (this.world.IsDisposed(entity)) {
-                InvalidAddOperationException.ThrowDisposedEntity(entity, this.type);
-            }
-            
-            if (this.map.IsKeySet(entity.Id, out var slotIndex)) {
-                InvalidAddOperationException.ThrowAlreadyExists(entity, this.type);
-            } else {
-                slotIndex = this.map.TakeSlot(entity.Id, out var resized);
-                
-                if (resized) {
-                    ArrayHelpers.GrowNonInlined(ref this.data, this.map.capacity);
-#if MORPEH_DEBUG
-                    this.world.newMetrics.stashResizes++;
-#endif
-                }
-                
-                this.data[slotIndex] = value;
-                this.world.TransientChangeAddComponent(entity.Id, ref this.typeInfo);
-            }
-        }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Get(Entity entity) {
             this.world.ThreadSafetyCheck();
             
-            if (this.world.IsDisposed(entity)) {
+            if (this.world.EntityIsDisposed(entity)) {
                 InvalidGetOperationException.ThrowDisposedEntity(entity, this.type);
             }
             
-            if (this.map.TryGetIndex(entity.Id, out var dataIndex)) {
+            if (this.map.TryGetIndex(entity.id, out var dataIndex)) {
                 return ref this.data[dataIndex];
             }
             
@@ -174,11 +93,11 @@ namespace Scellecs.Morpeh {
         public ref T Get(Entity entity, out bool exist) {
             this.world.ThreadSafetyCheck();
             
-            if (this.world.IsDisposed(entity)) {
+            if (this.world.EntityIsDisposed(entity)) {
                 InvalidGetOperationException.ThrowDisposedEntity(entity, this.type);
             }
             
-            if (this.map.TryGetIndex(entity.Id, out var dataIndex)) {
+            if (this.map.TryGetIndex(entity.id, out var dataIndex)) {
                 exist = true;
                 return ref this.data[dataIndex];
             }
@@ -188,15 +107,15 @@ namespace Scellecs.Morpeh {
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Set(Entity entity) {
+        public ref T Set(Entity entity) {
             this.world.ThreadSafetyCheck();
             
-            if (this.world.IsDisposed(entity)) {
+            if (this.world.EntityIsDisposed(entity)) {
                 InvalidSetOperationException.ThrowDisposedEntity(entity, this.type);
             }
             
-            if (!this.map.IsKeySet(entity.Id, out var slotIndex)) {
-                slotIndex = this.map.TakeSlot(entity.Id, out var resized);
+            if (!this.map.IsKeySet(entity.id, out var slotIndex)) {
+                slotIndex = this.map.TakeSlot(entity.id, out var resized);
                 
                 if (resized) {
                     ArrayHelpers.GrowNonInlined(ref this.data, this.map.capacity);
@@ -205,22 +124,52 @@ namespace Scellecs.Morpeh {
 #endif
                 }
                 
-                this.world.TransientChangeAddComponent(entity.Id, ref this.typeInfo);
+                this.world.TransientChangeAddComponent(entity.id, ref this.typeInfo);
             }
             
             this.data[slotIndex] = default;
+            return ref this.data[slotIndex];
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref T Set(Entity entity, out bool exist) {
+            this.world.ThreadSafetyCheck();
+            
+            exist = true;
+            
+            if (this.world.EntityIsDisposed(entity)) {
+                InvalidSetOperationException.ThrowDisposedEntity(entity, this.type);
+            }
+            
+            if (!this.map.IsKeySet(entity.id, out var slotIndex)) {
+                slotIndex = this.map.TakeSlot(entity.id, out var resized);
+                
+                if (resized) {
+                    ArrayHelpers.GrowNonInlined(ref this.data, this.map.capacity);
+#if MORPEH_DEBUG
+                    this.world.newMetrics.stashResizes++;
+#endif
+                }
+                
+                this.world.TransientChangeAddComponent(entity.id, ref this.typeInfo);
+                exist = false;
+            }
+            
+            this.data[slotIndex] = default;
+            return ref this.data[slotIndex];
+        }
+
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set(Entity entity, in T value) {
             this.world.ThreadSafetyCheck();
             
-            if (this.world.IsDisposed(entity)) {
+            if (this.world.EntityIsDisposed(entity)) {
                 InvalidSetOperationException.ThrowDisposedEntity(entity, this.type);
             }
             
-            if (!this.map.IsKeySet(entity.Id, out var slotIndex)) {
-                slotIndex = this.map.TakeSlot(entity.Id, out var resized);
+            if (!this.map.IsKeySet(entity.id, out var slotIndex)) {
+                slotIndex = this.map.TakeSlot(entity.id, out var resized);
                 
                 if (resized) {
                     ArrayHelpers.GrowNonInlined(ref this.data, this.map.capacity);
@@ -229,7 +178,7 @@ namespace Scellecs.Morpeh {
 #endif
                 }
                 
-                this.world.TransientChangeAddComponent(entity.Id, ref this.typeInfo);
+                this.world.TransientChangeAddComponent(entity.id, ref this.typeInfo);
             }
             
             this.data[slotIndex] = value;
@@ -239,12 +188,12 @@ namespace Scellecs.Morpeh {
         public bool Remove(Entity entity) {
             this.world.ThreadSafetyCheck();
             
-            if (this.world.IsDisposed(entity)) {
+            if (this.world.EntityIsDisposed(entity)) {
                 InvalidRemoveOperationException.ThrowDisposedEntity(entity, this.type);
             }
             
-            if (this.map.Remove(entity.Id, out var slotIndex)) {
-                this.world.TransientChangeRemoveComponent(entity.Id, ref this.typeInfo);
+            if (this.map.Remove(entity.id, out var slotIndex)) {
+                this.world.TransientChangeRemoveComponent(entity.id, ref this.typeInfo);
 #if !MORPEH_DISABLE_COMPONENT_DISPOSE
                 this.componentDispose?.Invoke(ref this.data[slotIndex]);
 #endif
@@ -285,7 +234,7 @@ namespace Scellecs.Morpeh {
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void IStash.Clean(Entity entity) {
-            if (this.map.Remove(entity.Id, out var slotIndex)) {
+            if (this.map.Remove(entity.id, out var slotIndex)) {
 #if !MORPEH_DISABLE_COMPONENT_DISPOSE
                 this.componentDispose?.Invoke(ref this.data[slotIndex]);
 #endif
@@ -297,19 +246,19 @@ namespace Scellecs.Morpeh {
         public void Migrate(Entity from, Entity to, bool overwrite = true) {
             this.world.ThreadSafetyCheck();
             
-            if (this.world.IsDisposed(from)) {
+            if (this.world.EntityIsDisposed(from)) {
                 InvalidMigrateOperationException.ThrowDisposedEntityFrom(from, this.type);
             }
             
-            if (this.world.IsDisposed(to)) {
+            if (this.world.EntityIsDisposed(to)) {
                 InvalidMigrateOperationException.ThrowDisposedEntityTo(to, this.type);
             }
             
-            if (this.map.TryGetIndex(from.Id, out var fromSlotIndex)) {
+            if (this.map.TryGetIndex(from.id, out var fromSlotIndex)) {
                 ref var component = ref this.data[fromSlotIndex];
                 
-                if (!this.map.IsKeySet(to.Id, out var toSlotIndex)) {
-                    toSlotIndex = this.map.TakeSlot(to.Id, out var resized);
+                if (!this.map.IsKeySet(to.id, out var toSlotIndex)) {
+                    toSlotIndex = this.map.TakeSlot(to.id, out var resized);
                     
                     if (resized) {
                         ArrayHelpers.GrowNonInlined(ref this.data, this.map.capacity);
@@ -319,14 +268,14 @@ namespace Scellecs.Morpeh {
                     }
                     
                     this.data[toSlotIndex] = component;
-                    this.world.TransientChangeAddComponent(to.Id, ref this.typeInfo);
+                    this.world.TransientChangeAddComponent(to.id, ref this.typeInfo);
                 } else if (overwrite) {
                     this.data[toSlotIndex] = component;
                 }
                 
-                if (this.map.Remove(from.Id, out _)) {
+                if (this.map.Remove(from.id, out _)) {
                     this.data[fromSlotIndex] = default;
-                    this.world.TransientChangeRemoveComponent(from.Id, ref this.typeInfo);
+                    this.world.TransientChangeRemoveComponent(from.id, ref this.typeInfo);
                 }
             }
         }
@@ -335,11 +284,11 @@ namespace Scellecs.Morpeh {
         public bool Has(Entity entity) {
             this.world.ThreadSafetyCheck();
             
-            if (this.world.IsDisposed(entity)) {
+            if (this.world.EntityIsDisposed(entity)) {
                 InvalidHasOperationException.ThrowDisposedEntity(entity, this.type);
             }
             
-            return this.map.Has(entity.Id);
+            return this.map.Has(entity.id);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

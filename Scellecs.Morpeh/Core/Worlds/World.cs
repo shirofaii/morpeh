@@ -117,10 +117,10 @@ namespace Scellecs.Morpeh {
         internal int emptyArchetypesCount;
         
         [ShowInInspector]
-        internal int identifier;
+        internal byte identifier;
 
         [ShowInInspector]
-        internal int generation;
+        internal byte generation;
         
         [ShowInInspector]
         internal int threadIdLock;
@@ -305,5 +305,8 @@ namespace Scellecs.Morpeh {
             public int migrations;
             public int stashResizes;
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Stash<T> GetStash<T>() where T : struct, IComponent => Default.GetStash<T>();
     }
 }

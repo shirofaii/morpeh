@@ -62,7 +62,7 @@ public class StashTests {
         var entity = this.world.CreateEntity();
         var stash = this.world.GetStash<IntTest1>();
         var stashLength = stash.Length;
-        ref var component = ref stash.Add(entity);
+        ref var component = ref stash.Set(entity);
 
         Assert.True(stash.Has(entity));
         Assert.Equal(stash.Length, stashLength + 1);
@@ -78,7 +78,7 @@ public class StashTests {
         var entity = this.world.CreateEntity();
         var stash = this.world.GetStash<IntTest1>();
         var stashLength = stash.Length;
-        ref var component = ref stash.Add(entity, out var exists);
+        ref var component = ref stash.Set(entity, out var exists);
 
         Assert.False(exists);
         Assert.True(stash.Has(entity));
@@ -95,7 +95,7 @@ public class StashTests {
         var entity = this.world.CreateEntity();
         var stash = this.world.GetStash<Test1>();
         var stashLength = stash.Length;
-        stash.Add(entity, new Test1());
+        stash.Set(entity, new Test1());
         ref var component = ref stash.Get(entity);
 
         Assert.True(stash.Has(entity));
@@ -105,26 +105,15 @@ public class StashTests {
     }
 
     [Fact]
-    public void AddSimple_ExistingThrowsException() {
-        var entity = this.world.CreateEntity();
-        var stash = this.world.GetStash<Test2>();
-
-        stash.Add(entity);
-        Assert.Throws<InvalidAddOperationException>(() => stash.Add(entity));
-
-        this.world.Commit();
-    }
-
-    [Fact]
     public void AddOutExists_ExistingDoesNotThrow() {
         var entity = this.world.CreateEntity();
         var stash = this.world.GetStash<Test2>();
 
-        stash.Add(entity, out var exists);
+        stash.Set(entity, out var exists);
         Assert.False(exists);
 
         var exception = Record.Exception(() => {
-            stash.Add(entity, out var existsAfter);
+            stash.Set(entity, out var existsAfter);
             Assert.True(existsAfter);
             output.WriteLine(existsAfter.ToString());
         });
@@ -135,32 +124,10 @@ public class StashTests {
     }
 
     [Fact]
-    public void AddInComponent_ExistingThrowsException() {
-        var entity = this.world.CreateEntity();
-        var stash = this.world.GetStash<IntTest1>();
-
-        stash.Add(entity, new IntTest1 { value = 42 });
-        Assert.Throws<InvalidAddOperationException>(() => stash.Add(entity, new IntTest1 { value = 43 }));
-
-        this.world.Commit();
-    }
-
-    [Fact]
-    public void AddSameComponentWithDifferentOverloads_ThrowsException() {
-        var entity = this.world.CreateEntity();
-        var stash = this.world.GetStash<Test2>();
-
-        stash.Add(entity);
-        Assert.Throws<InvalidAddOperationException>(() => stash.Add(entity, new Test2()));
-
-        this.world.Commit();
-    }
-
-    [Fact]
     public void AddSimple_InitInplace() {
         var entity = this.world.CreateEntity();
         var stash = this.world.GetStash<IntTest1>();
-        stash.Add(entity) = new IntTest1 { value = 587 };
+        stash.Set(entity) = new IntTest1 { value = 587 };
         Assert.Equal(587, stash.Get(entity).value);
 
         this.world.Commit();
@@ -170,7 +137,7 @@ public class StashTests {
     public void AddOutExists_InitInplace() {
         var entity = this.world.CreateEntity();
         var stash = this.world.GetStash<IntTest1>();
-        stash.Add(entity, out var exists) = new IntTest1 { value = 787 };
+        stash.Set(entity, out var exists) = new IntTest1 { value = 787 };
         Assert.False(exists);
         Assert.Equal(787, stash.Get(entity).value);
 
@@ -182,7 +149,7 @@ public class StashTests {
         var entity = this.world.CreateEntity();
         var stash = this.world.GetStash<Test1>();
         var stashLength = stash.Length;
-        stash.Add(entity);
+        stash.Set(entity);
         ref var component = ref stash.Get(entity);
 
         Assert.True(stash.Has(entity));
@@ -196,7 +163,7 @@ public class StashTests {
         var entity = this.world.CreateEntity();
         var stash = this.world.GetStash<IntTest1>();
         var stashLength = stash.Length;
-        stash.Add(entity, new IntTest1 { value = 42 });
+        stash.Set(entity, new IntTest1 { value = 42 });
         ref var component = ref stash.Get(entity);
 
         Assert.True(stash.Has(entity));
@@ -239,7 +206,7 @@ public class StashTests {
         var entity = this.world.CreateEntity();
         var stash = this.world.GetStash<IntTest1>();
 
-        stash.Add(entity, new IntTest1 { value = 100 });
+        stash.Set(entity, new IntTest1 { value = 100 });
         stash.Set(entity, new IntTest1 { value = 200 });
 
         Assert.Equal(200, stash.Get(entity).value);
@@ -342,7 +309,7 @@ public class StashTests {
     public void Remove_ExistentComponentDecreaseStashLength() {
         var entity = this.world.CreateEntity();
         var stash = this.world.GetStash<IntTest1>();
-        stash.Add(entity);
+        stash.Set(entity);
         var stashLength = stash.Length;
         var removed = stash.Remove(entity);
 
@@ -531,13 +498,13 @@ public class StashTests {
         var stash3 = this.world.GetStash<Test4>();
         var entity = this.world.CreateEntity();
         var entity2 = this.world.CreateEntity();
-        stash3.Add(entity);
-        stash3.Add(entity2);
+        stash3.Set(entity);
+        stash3.Set(entity2);
         this.world.RemoveEntity(entity);
 
-        Assert.Throws<InvalidAddOperationException>(() => stash.Add(entity));
-        Assert.Throws<InvalidAddOperationException>(() => stash.Add(entity, out var exist));
-        Assert.Throws<InvalidAddOperationException>(() => stash.Add(entity, new Test1()));
+        Assert.Throws<InvalidSetOperationException>(() => stash.Set(entity));
+        Assert.Throws<InvalidSetOperationException>(() => stash.Set(entity, out var exist));
+        Assert.Throws<InvalidSetOperationException>(() => stash.Set(entity, new Test1()));
         Assert.Throws<InvalidSetOperationException>(() => stash.Set(entity));
         Assert.Throws<InvalidSetOperationException>(() => stash.Set(entity, new Test1()));
         Assert.Throws<InvalidGetOperationException>(() => stash.Get(entity, out var exists));
@@ -546,9 +513,9 @@ public class StashTests {
         Assert.Throws<InvalidRemoveOperationException>(() => stash.Remove(entity));
         Assert.Throws<InvalidMigrateOperationException>(() => stash.Migrate(entity, entity2));
 
-        Assert.Throws<InvalidAddOperationException>(() => stash2.Add(entity));
-        Assert.Throws<InvalidAddOperationException>(() => stash2.Add(entity, out var exist));
-        Assert.Throws<InvalidAddOperationException>(() => stash2.Add(entity, new Test2()));
+        Assert.Throws<InvalidSetOperationException>(() => stash2.Set(entity));
+        Assert.Throws<InvalidSetOperationException>(() => stash2.Set(entity, out var exist));
+        Assert.Throws<InvalidSetOperationException>(() => stash2.Set(entity, new Test2()));
         Assert.Throws<InvalidSetOperationException>(() => stash2.Set(entity));
         Assert.Throws<InvalidSetOperationException>(() => stash2.Set(entity, new Test2()));
         Assert.Throws<InvalidGetOperationException>(() => stash2.Get(entity, out var exists));
@@ -557,9 +524,9 @@ public class StashTests {
         Assert.Throws<InvalidRemoveOperationException>(() => stash2.Remove(entity));
         Assert.Throws<InvalidMigrateOperationException>(() => stash2.Migrate(entity, entity2));
 
-        Assert.Throws<InvalidAddOperationException>(() => stash3.Add(entity));
-        Assert.Throws<InvalidAddOperationException>(() => stash3.Add(entity, out var exist));
-        Assert.Throws<InvalidAddOperationException>(() => stash3.Add(entity, new Test4()));
+        Assert.Throws<InvalidSetOperationException>(() => stash3.Set(entity));
+        Assert.Throws<InvalidSetOperationException>(() => stash3.Set(entity, out var exist));
+        Assert.Throws<InvalidSetOperationException>(() => stash3.Set(entity, new Test4()));
         Assert.Throws<InvalidSetOperationException>(() => stash3.Set(entity));
         Assert.Throws<InvalidSetOperationException>(() => stash3.Set(entity, new Test4()));
         Assert.Throws<InvalidGetOperationException>(() => stash3.Get(entity, out var exists));
@@ -578,15 +545,15 @@ public class StashTests {
         var stash3 = this.world.GetStash<Test4>();
         var entity = this.world.CreateEntity();
         var entity2 = this.world.CreateEntity();
-        stash3.Add(entity);
-        stash3.Add(entity2);
+        stash3.Set(entity);
+        stash3.Set(entity2);
         this.world.RemoveEntity(entity);
 
         this.world.Commit();
 
-        Assert.Throws<InvalidAddOperationException>(() => stash.Add(entity));
-        Assert.Throws<InvalidAddOperationException>(() => stash.Add(entity, out var exist));
-        Assert.Throws<InvalidAddOperationException>(() => stash.Add(entity, new Test1()));
+        Assert.Throws<InvalidSetOperationException>(() => stash.Set(entity));
+        Assert.Throws<InvalidSetOperationException>(() => stash.Set(entity, out var exist));
+        Assert.Throws<InvalidSetOperationException>(() => stash.Set(entity, new Test1()));
         Assert.Throws<InvalidSetOperationException>(() => stash.Set(entity));
         Assert.Throws<InvalidSetOperationException>(() => stash.Set(entity, new Test1()));
         Assert.Throws<InvalidGetOperationException>(() => stash.Get(entity, out var exists));
@@ -595,9 +562,9 @@ public class StashTests {
         Assert.Throws<InvalidRemoveOperationException>(() => stash.Remove(entity));
         Assert.Throws<InvalidMigrateOperationException>(() => stash.Migrate(entity, entity2));
 
-        Assert.Throws<InvalidAddOperationException>(() => stash2.Add(entity));
-        Assert.Throws<InvalidAddOperationException>(() => stash2.Add(entity, out var exist));
-        Assert.Throws<InvalidAddOperationException>(() => stash2.Add(entity, new Test2()));
+        Assert.Throws<InvalidSetOperationException>(() => stash2.Set(entity));
+        Assert.Throws<InvalidSetOperationException>(() => stash2.Set(entity, out var exist));
+        Assert.Throws<InvalidSetOperationException>(() => stash2.Set(entity, new Test2()));
         Assert.Throws<InvalidSetOperationException>(() => stash2.Set(entity));
         Assert.Throws<InvalidSetOperationException>(() => stash2.Set(entity, new Test2()));
         Assert.Throws<InvalidGetOperationException>(() => stash2.Get(entity, out var exists));
@@ -606,9 +573,9 @@ public class StashTests {
         Assert.Throws<InvalidRemoveOperationException>(() => stash2.Remove(entity));
         Assert.Throws<InvalidMigrateOperationException>(() => stash2.Migrate(entity, entity2));
 
-        Assert.Throws<InvalidAddOperationException>(() => stash3.Add(entity));
-        Assert.Throws<InvalidAddOperationException>(() => stash3.Add(entity, out var exist));
-        Assert.Throws<InvalidAddOperationException>(() => stash3.Add(entity, new Test4()));
+        Assert.Throws<InvalidSetOperationException>(() => stash3.Set(entity));
+        Assert.Throws<InvalidSetOperationException>(() => stash3.Set(entity, out var exist));
+        Assert.Throws<InvalidSetOperationException>(() => stash3.Set(entity, new Test4()));
         Assert.Throws<InvalidSetOperationException>(() => stash3.Set(entity));
         Assert.Throws<InvalidSetOperationException>(() => stash3.Set(entity, new Test4()));
         Assert.Throws<InvalidGetOperationException>(() => stash3.Get(entity, out var exists));
@@ -618,103 +585,6 @@ public class StashTests {
         Assert.Throws<InvalidMigrateOperationException>(() => stash3.Migrate(entity, entity2));
 
         this.world.Commit();
-    }
-
-    [Fact]
-    public void StashOperations_ThrowOnEntityFromDifferentWorld() {
-        var stash = this.world.GetStash<Test1>();
-        var stash2 = this.world.GetStash<Test2>();
-        var stash3 = this.world.GetStash<Test4>();
-        var entity = this.world2.CreateEntity();
-        var entity2 = this.world2.CreateEntity();
-
-        Assert.Throws<InvalidAddOperationException>(() => stash3.Add(entity));
-        Assert.Throws<InvalidAddOperationException>(() => stash3.Add(entity2));
-
-        Assert.Throws<InvalidAddOperationException>(() => stash.Add(entity));
-        Assert.Throws<InvalidAddOperationException>(() => stash.Add(entity, out var exist));
-        Assert.Throws<InvalidAddOperationException>(() => stash.Add(entity, new Test1()));
-        Assert.Throws<InvalidSetOperationException>(() => stash.Set(entity));
-        Assert.Throws<InvalidSetOperationException>(() => stash.Set(entity, new Test1()));
-        Assert.Throws<InvalidGetOperationException>(() => stash.Get(entity, out var exists));
-        Assert.Throws<InvalidGetOperationException>(() => stash.Get(entity));
-        Assert.Throws<InvalidHasOperationException>(() => stash.Has(entity));
-        Assert.Throws<InvalidRemoveOperationException>(() => stash.Remove(entity));
-        Assert.Throws<InvalidMigrateOperationException>(() => stash.Migrate(entity, entity2));
-
-        Assert.Throws<InvalidAddOperationException>(() => stash2.Add(entity));
-        Assert.Throws<InvalidAddOperationException>(() => stash2.Add(entity, out var exist));
-        Assert.Throws<InvalidAddOperationException>(() => stash2.Add(entity, new Test2()));
-        Assert.Throws<InvalidSetOperationException>(() => stash2.Set(entity));
-        Assert.Throws<InvalidSetOperationException>(() => stash2.Set(entity, new Test2()));
-        Assert.Throws<InvalidGetOperationException>(() => stash2.Get(entity, out var exists));
-        Assert.Throws<InvalidGetOperationException>(() => stash2.Get(entity));
-        Assert.Throws<InvalidHasOperationException>(() => stash2.Has(entity));
-        Assert.Throws<InvalidRemoveOperationException>(() => stash2.Remove(entity));
-        Assert.Throws<InvalidMigrateOperationException>(() => stash2.Migrate(entity, entity2));
-
-        Assert.Throws<InvalidAddOperationException>(() => stash3.Add(entity));
-        Assert.Throws<InvalidAddOperationException>(() => stash3.Add(entity, out var exist));
-        Assert.Throws<InvalidAddOperationException>(() => stash3.Add(entity, new Test4()));
-        Assert.Throws<InvalidSetOperationException>(() => stash3.Set(entity));
-        Assert.Throws<InvalidSetOperationException>(() => stash3.Set(entity, new Test4()));
-        Assert.Throws<InvalidGetOperationException>(() => stash3.Get(entity, out var exists));
-        Assert.Throws<InvalidGetOperationException>(() => stash3.Get(entity));
-        Assert.Throws<InvalidHasOperationException>(() => stash3.Has(entity));
-        Assert.Throws<InvalidRemoveOperationException>(() => stash3.Remove(entity));
-        Assert.Throws<InvalidMigrateOperationException>(() => stash3.Migrate(entity, entity2));
-
-        this.world.Commit();
-        this.world2.Commit();
-    }
-
-    [Fact]
-    public void StashOperations_ThrowOnDisposedEntityFromDifferentWorld() {
-        var stash = this.world.GetStash<Test1>();
-        var stash2 = this.world.GetStash<Test2>();
-        var stash3 = this.world.GetStash<Test4>();
-        var entity = this.world2.CreateEntity();
-        var entity2 = this.world2.CreateEntity();
-        this.world2.RemoveEntity(entity);
-
-        Assert.Throws<InvalidAddOperationException>(() => stash3.Add(entity));
-        Assert.Throws<InvalidAddOperationException>(() => stash3.Add(entity2));
-
-        Assert.Throws<InvalidAddOperationException>(() => stash.Add(entity));
-        Assert.Throws<InvalidAddOperationException>(() => stash.Add(entity, out var exist));
-        Assert.Throws<InvalidAddOperationException>(() => stash.Add(entity, new Test1()));
-        Assert.Throws<InvalidSetOperationException>(() => stash.Set(entity));
-        Assert.Throws<InvalidSetOperationException>(() => stash.Set(entity, new Test1()));
-        Assert.Throws<InvalidGetOperationException>(() => stash.Get(entity, out var exists));
-        Assert.Throws<InvalidGetOperationException>(() => stash.Get(entity));
-        Assert.Throws<InvalidHasOperationException>(() => stash.Has(entity));
-        Assert.Throws<InvalidRemoveOperationException>(() => stash.Remove(entity));
-        Assert.Throws<InvalidMigrateOperationException>(() => stash.Migrate(entity, entity2));
-
-        Assert.Throws<InvalidAddOperationException>(() => stash2.Add(entity));
-        Assert.Throws<InvalidAddOperationException>(() => stash2.Add(entity, out var exist));
-        Assert.Throws<InvalidAddOperationException>(() => stash2.Add(entity, new Test2()));
-        Assert.Throws<InvalidSetOperationException>(() => stash2.Set(entity));
-        Assert.Throws<InvalidSetOperationException>(() => stash2.Set(entity, new Test2()));
-        Assert.Throws<InvalidGetOperationException>(() => stash2.Get(entity, out var exists));
-        Assert.Throws<InvalidGetOperationException>(() => stash2.Get(entity));
-        Assert.Throws<InvalidHasOperationException>(() => stash2.Has(entity));
-        Assert.Throws<InvalidRemoveOperationException>(() => stash2.Remove(entity));
-        Assert.Throws<InvalidMigrateOperationException>(() => stash2.Migrate(entity, entity2));
-
-        Assert.Throws<InvalidAddOperationException>(() => stash3.Add(entity));
-        Assert.Throws<InvalidAddOperationException>(() => stash3.Add(entity, out var exist));
-        Assert.Throws<InvalidAddOperationException>(() => stash3.Add(entity, new Test4()));
-        Assert.Throws<InvalidSetOperationException>(() => stash3.Set(entity));
-        Assert.Throws<InvalidSetOperationException>(() => stash3.Set(entity, new Test4()));
-        Assert.Throws<InvalidGetOperationException>(() => stash3.Get(entity, out var exists));
-        Assert.Throws<InvalidGetOperationException>(() => stash3.Get(entity));
-        Assert.Throws<InvalidHasOperationException>(() => stash3.Has(entity));
-        Assert.Throws<InvalidRemoveOperationException>(() => stash3.Remove(entity));
-        Assert.Throws<InvalidMigrateOperationException>(() => stash3.Migrate(entity, entity2));
-
-        this.world.Commit();
-        this.world2.Commit();
     }
 
     [Fact]
@@ -728,10 +598,10 @@ public class StashTests {
 
         for (int i = 0; i < entityCount; i++) {
             var entity = this.world.CreateEntity();
-            stash.Add(entity, new IntTest1 { value = i });
-            stash2.Add(entity);
-            stash3.Add(entity);
-            stash4.Add(entity);
+            stash.Set(entity, new IntTest1 { value = i });
+            stash2.Set(entity);
+            stash3.Set(entity);
+            stash4.Set(entity);
             entities.Add(entity);
         }
 
@@ -768,7 +638,7 @@ public class StashTests {
                 
                 var wasAddedToStash = !stash.Has(entity);
                 if (wasAddedToStash) {
-                    stash.Add(entity, component);
+                    stash.Set(entity, component);
                 }
                 
                 var wasAddedToTracker = !tracker.ContainsKey(entity);

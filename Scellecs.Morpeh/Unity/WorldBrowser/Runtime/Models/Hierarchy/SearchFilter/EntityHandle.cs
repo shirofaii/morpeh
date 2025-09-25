@@ -5,7 +5,7 @@ namespace Scellecs.Morpeh.WorldBrowser.Filter {
         internal readonly Entity entity;
         internal readonly long archetypeHash;
 
-        internal World World => this.entity.GetWorld();
+        internal World World => World.Default;
         internal Archetype Archetype => this.World.entities[this.entity.Id].currentArchetype;
         internal EntityData EntityData => this.World.entities[entity.Id];
         internal bool IsValid => !this.World.IsNullOrDisposed() && !this.World.IsDisposed(this.entity);
@@ -27,7 +27,7 @@ namespace Scellecs.Morpeh.WorldBrowser.Filter {
         }
 
         public override string ToString() {
-            return $"{entity.Id}:{entity.Generation}, IsValid:{IsValid}, archetypeHash:{archetypeHash}";
+            return $"{entity.id}:{entity.generation}, IsValid:{IsValid}, archetypeHash:{archetypeHash}";
         }
     }
 }

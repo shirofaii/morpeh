@@ -627,7 +627,7 @@ public class WorldTests : IDisposable {
         var filter2 = world.Filter.With<Test1>().Without<Test2>().Build();
         var entity = world.CreateEntity();
 
-        entity.AddComponent<Test1>();
+        World.GetStash<Test1>().Set(entity);
 
         Assert.True(filter.IsEmpty());
         Assert.True(filter2.IsEmpty());
@@ -637,7 +637,7 @@ public class WorldTests : IDisposable {
         Assert.True(filter.IsEmpty());
         Assert.True(filter2.IsNotEmpty());
 
-        entity.AddComponent<Test2>();
+        World.GetStash<Test2>().Set(entity);
 
         Assert.True(filter.IsEmpty());
         Assert.True(filter2.IsNotEmpty());

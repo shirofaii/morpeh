@@ -28,9 +28,9 @@ namespace Scellecs.Morpeh.WorldBrowser.Editor {
             this.Add(rightHalf);
         }
 
-        internal void Bind(Entity entity) {
-            this.leftLabel.text = $"Entity: {entity.Id} : {entity.Generation}";
-            this.rightLabel.text = $"World: {entity.WorldId} : {entity.WorldGeneration}";
+        internal void Bind(EntityHandle entityHandle) {
+            this.leftLabel.text = $"";
+            this.rightLabel.text = $"{entityHandle.entity.id}:{entityHandle.entity.generation}";
         }
 
         internal void Reset() {

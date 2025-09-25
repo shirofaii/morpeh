@@ -23,12 +23,12 @@ public class EntityDisposalTests {
         Assert.Equal(1, world.entitiesCount);
         
         this.world.RemoveEntity(entity);
-        Assert.True(this.world.IsDisposed(entity));
+        Assert.True(this.world.EntityIsDisposed(entity));
         Assert.Equal(0, world.entitiesCount);
         
         var newEntity = this.world.CreateEntity();
         Assert.NotEqual(newEntity, entity);
-        Assert.NotEqual(entity.Id, newEntity.Id);
+        Assert.NotEqual(entity.id, newEntity.id);
     }
     
     [Fact]
@@ -39,12 +39,12 @@ public class EntityDisposalTests {
         Assert.Equal(1, world.entitiesCount);
         
         this.world.RemoveEntity(entity);
-        Assert.True(this.world.IsDisposed(entity));
+        Assert.True(this.world.EntityIsDisposed(entity));
         Assert.Equal(0, world.entitiesCount);
         
         var newEntity = this.world.CreateEntity();
         Assert.NotEqual(newEntity, entity);
-        Assert.NotEqual(entity.Id, newEntity.Id);
+        Assert.NotEqual(entity.id, newEntity.id);
     }
     
     [Fact]
@@ -54,12 +54,12 @@ public class EntityDisposalTests {
         
         this.world.RemoveEntity(entity);
         this.world.Commit();
-        Assert.True(this.world.IsDisposed(entity));
+        Assert.True(this.world.EntityIsDisposed(entity));
         Assert.Equal(0, world.entitiesCount);
         
         var newEntity = this.world.CreateEntity();
         Assert.NotEqual(newEntity, entity);
-        Assert.Equal(entity.Generation + 1, newEntity.Generation);
+        Assert.Equal(entity.generation + 1, newEntity.generation);
     }
     
     [Fact]
@@ -70,13 +70,13 @@ public class EntityDisposalTests {
         this.test1.Set(entity, new Test1());
         this.world.RemoveEntity(entity);
         this.world.Commit();
-        Assert.True(this.world.IsDisposed(entity));
+        Assert.True(this.world.EntityIsDisposed(entity));
         Assert.Equal(0, world.entitiesCount);
         
         
         var newEntity = this.world.CreateEntity();
         Assert.NotEqual(newEntity, entity);
-        Assert.Equal(entity.Generation + 1, newEntity.Generation);
+        Assert.Equal(entity.generation + 1, newEntity.generation);
     }
     
     [Fact]
@@ -86,20 +86,20 @@ public class EntityDisposalTests {
         
         this.test1.Set(entity, new Test1());
         this.world.Commit();
-        Assert.False(this.world.IsDisposed(entity));
+        Assert.False(this.world.EntityIsDisposed(entity));
         Assert.Equal(1, world.entitiesCount);
         
         this.world.RemoveEntity(entity);
         Assert.Equal(0, world.entitiesCount);
-        Assert.True(this.world.IsDisposed(entity));
+        Assert.True(this.world.EntityIsDisposed(entity));
         
         this.world.Commit();
-        Assert.True(this.world.IsDisposed(entity));
+        Assert.True(this.world.EntityIsDisposed(entity));
         Assert.Equal(0, world.entitiesCount);
         
         var newEntity = this.world.CreateEntity();
         Assert.NotEqual(newEntity, entity);
-        Assert.Equal(entity.Generation + 1, newEntity.Generation);
+        Assert.Equal(entity.generation + 1, newEntity.generation);
     }
     
     [Fact]
@@ -109,17 +109,17 @@ public class EntityDisposalTests {
         
         this.test1.Set(entity, new Test1());
         this.test1.Remove(entity);
-        Assert.False(this.world.IsDisposed(entity));
+        Assert.False(this.world.EntityIsDisposed(entity));
         Assert.Equal(1, world.entitiesCount);
         
         this.world.Commit();
         
-        Assert.True(this.world.IsDisposed(entity));
+        Assert.True(this.world.EntityIsDisposed(entity));
         Assert.Equal(0, world.entitiesCount);
         
         var newEntity = this.world.CreateEntity();
         Assert.NotEqual(newEntity, entity);
-        Assert.Equal(entity.Generation + 1, newEntity.Generation);
+        Assert.Equal(entity.generation + 1, newEntity.generation);
     }
     
     [Fact]
@@ -134,11 +134,11 @@ public class EntityDisposalTests {
         this.test1.Remove(entity);
         this.world.Commit();
         
-        Assert.True(this.world.IsDisposed(entity));
+        Assert.True(this.world.EntityIsDisposed(entity));
         Assert.Equal(0, world.entitiesCount);
         
         var newEntity = this.world.CreateEntity();
         Assert.NotEqual(newEntity, entity);
-        Assert.Equal(entity.Generation + 1, newEntity.Generation);
+        Assert.Equal(entity.generation + 1, newEntity.generation);
     }
 }

@@ -19,7 +19,7 @@
 #endif
         private T Data {
             get {
-                if (this.cachedEntity.IsNullOrDisposed() == false) {
+                if (this.cachedEntity.IsDisposed() == false) {
                     var data = this.Stash.Get(this.cachedEntity, out var exist);
                     if (exist) {
                         return data;
@@ -29,7 +29,7 @@
                 return this.serializedData;
             }
             set {
-                if (this.cachedEntity.IsNullOrDisposed() == false) {
+                if (this.cachedEntity.IsDisposed() == false) {
                     this.Stash.Set(this.cachedEntity, value);
                 }
                 else {
@@ -51,7 +51,7 @@
 
         public ref T GetData() {
             var ent = this.Entity;
-            if (ent.IsNullOrDisposed() == false) {
+            if (ent.IsDisposed() == false) {
                 if (this.Stash.Has(ent)) {
                     return ref this.Stash.Get(ent);
                 }
@@ -61,7 +61,7 @@
         }
 
         public ref T GetData(out bool existOnEntity) {
-            if (this.cachedEntity.IsNullOrDisposed() == false) {
+            if (this.cachedEntity.IsDisposed() == false) {
                 return ref this.Stash.Get(this.cachedEntity, out existOnEntity);
             }
 
@@ -86,7 +86,7 @@
 
         protected sealed override void PreDeinitialize() {
             var ent = this.cachedEntity;
-            if (ent.IsNullOrDisposed() == false) {
+            if (ent.IsDisposed() == false) {
                 this.Stash.Remove(ent);
             }
         }

@@ -23,7 +23,7 @@ public unsafe class EntityPinnedArrayTests(ITestOutputHelper output) {
     public void Clear_SetsAllElementsToDefault() {
         var array = new EntityPinnedArray(10);
         for (int i = 0; i < 10; i++) {
-            array.data[i] = new Entity(0, 0, i + 1, 0);
+            array.data[i] = new Entity(id: i + 1, generation: 0);
         }
 
         array.Clear();
@@ -40,7 +40,7 @@ public unsafe class EntityPinnedArrayTests(ITestOutputHelper output) {
         var array = new EntityPinnedArray(10);
 
         for (int i = 0; i < 10; i++) {
-            array.data[i] = new Entity(0, 0, i + 1, 0);
+            array.data[i] = new Entity(id: i + 1, generation: 0);
         }
 
         for (int i = 0; i < 10; i++) {
@@ -55,7 +55,7 @@ public unsafe class EntityPinnedArrayTests(ITestOutputHelper output) {
         var array = new EntityPinnedArray(5);
 
         for (int i = 0; i < 5; i++) {
-            array.data[i] = new Entity(0, 0, i + 1, 0);
+            array.data[i] = new Entity(id: i + 1, generation: 0);
         }
 
         var oldPtr = array.ptr;
@@ -66,7 +66,8 @@ public unsafe class EntityPinnedArrayTests(ITestOutputHelper output) {
         Assert.Equal(10, array.data.Length);
 
         for (int i = 0; i < 5; i++) {
-            Assert.Equal(new Entity(0, 0, i + 1, 0), array.ptr[i]);
+            var entity = new Entity(id: i + 1, generation: 0);
+            Assert.Equal(entity, array.ptr[i]);
         }
 
         for (int i = 5; i < 10; i++) {
@@ -80,14 +81,16 @@ public unsafe class EntityPinnedArrayTests(ITestOutputHelper output) {
     public void Resize_ChangesArraySizeAndPreservesData() {
         var array = new EntityPinnedArray(5);
         for (int i = 0; i < 5; i++) {
-            array.data[i] = new Entity(0, 0, i + 1, 0);
+            array.data[i] = new Entity(id: i + 1, generation: 0);
         }
 
         array.Resize(10);
 
         Assert.Equal(10, array.data.Length);
         for (int i = 0; i < 5; i++) {
-            Assert.Equal(new Entity(0, 0, i + 1, 0), array.data[i]);
+            var entity = new Entity(id: i + 1, generation: 0);
+
+            Assert.Equal(entity, array.data[i]);
         }
 
         for (int i = 5; i < 10; i++) {
@@ -101,14 +104,16 @@ public unsafe class EntityPinnedArrayTests(ITestOutputHelper output) {
     public void Resize_ShrinksArrayAndTruncatesData() {
         var array = new EntityPinnedArray(10);
         for (int i = 0; i < 10; i++) {
-            array.data[i] = new Entity(0, 0, i + 1, 0);
+            array.data[i] = new Entity(id: i + 1, generation: 0);
         }
 
         array.Resize(5);
 
         Assert.Equal(5, array.data.Length);
         for (int i = 0; i < 5; i++) {
-            Assert.Equal(new Entity(0, 0, i + 1, 0), array.data[i]);
+            var entity = new Entity(id: i + 1, generation: 0);
+
+            Assert.Equal(entity, array.data[i]);
         }
 
         array.Dispose();
@@ -141,7 +146,7 @@ public unsafe class EntityPinnedArrayTests(ITestOutputHelper output) {
         var array = new EntityPinnedArray(10);
 
         for (int i = 0; i < 10; i++) {
-            array.data[i] = new Entity(0, 0, i + 1, 0);
+            array.data[i] = new Entity(id: i + 1, generation: 0);
         }
 
         array.Clear();
@@ -158,11 +163,13 @@ public unsafe class EntityPinnedArrayTests(ITestOutputHelper output) {
         var array = new EntityPinnedArray(5);
 
         for (int i = 0; i < 5; i++) {
-            array.ptr[i] = new Entity(0, 0, (i + 1) * 10, 0);
+            array.ptr[i] = new Entity(id: i + 1, generation: 0);
         }
 
         for (int i = 0; i < 5; i++) {
-            Assert.Equal(new Entity(0, 0, (i + 1) * 10, 0), array.data[i]);
+            var entity = new Entity(id: i + 1, generation: 0);
+
+            Assert.Equal(entity, array.data[i]);
         }
 
         array.Dispose();

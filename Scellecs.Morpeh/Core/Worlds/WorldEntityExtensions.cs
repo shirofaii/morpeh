@@ -52,18 +52,18 @@
         public static void RemoveEntity(this World world, Entity entity) {
             world.ThreadSafetyCheck();
             
-            if (world.IsDisposed(entity)) {
+            if (world.EntityIsDisposed(entity)) {
 #if MORPEH_DEBUG
                 MLogger.LogError($"You're trying to dispose disposed entity {entity}.");
 #endif
                 return;
             }
             
-            ref var entityData = ref world.entities[entity.Id];
+            ref var entityData = ref world.entities[entity.id];
             
             // Clear new components if entity is transient
             
-            if (world.dirtyEntities.Remove(entity.Id)) {
+            if (world.dirtyEntities.Remove(entity.id)) {
                 var addedComponentsCount = entityData.addedComponentsCount;
                 
                 for (var i = 0; i < addedComponentsCount; i++) {
@@ -80,22 +80,20 @@
                 }
             }
             
-            world.disposedEntities.Add(entity.Id);
+            world.disposedEntities.Add(entity.id);
             
-            world.IncrementGeneration(entity.Id);
+            world.IncrementGeneration(entity.id);
             --world.entitiesCount;
         }
 
         [PublicAPI]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsDisposed(this World world, Entity entity) {
+        public static bool EntityIsDisposed(this World world, Entity entity) {
             world.ThreadSafetyCheck();
             
-            return entity.Id <= 0 ||
-                   entity.Id >= world.entitiesCapacity ||
-                   world.entitiesGens[entity.Id] != entity.Generation ||
-                   entity.WorldId != world.identifier ||
-                   entity.WorldGeneration != world.generation;
+            return entity.id <= 0 ||
+                   entity.id >= world.entitiesCapacity ||
+                   world.entitiesGens[entity.id] != entity.generation;
         }
 
         [PublicAPI]
@@ -103,16 +101,14 @@
         public static bool Has(this World world, Entity entity) {
             world.ThreadSafetyCheck();
             
-            return entity.Id > 0 &&
-                   entity.Id < world.entitiesCapacity &&
-                   world.entitiesGens[entity.Id] == entity.Generation &&
-                   entity.WorldId == world.identifier &&
-                   entity.WorldGeneration == world.generation;
+            return entity.id > 0 &&
+                   entity.id < world.entitiesCapacity &&
+                   world.entitiesGens[entity.id] == entity.generation;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static Entity GetEntityAtIndex(this World world, int entityId) {
-            return new Entity(world.identifier, world.generation, entityId, world.entitiesGens[entityId]);
+            return new Entity(entityId, world.entitiesGens[entityId]);
         }
     }
 }

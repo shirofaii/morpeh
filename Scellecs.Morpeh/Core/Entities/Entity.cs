@@ -4,6 +4,7 @@ namespace Scellecs.Morpeh {
     using Unity.IL2CPP.CompilerServices;
     using System.Runtime.CompilerServices;
     using System.Diagnostics;
+    using System.Runtime.InteropServices;
 
 #if DEBUG && !DEVELOPMENT_BUILD
     [DebuggerTypeProxy(typeof(EntityDebuggerProxy))]
@@ -13,50 +14,27 @@ namespace Scellecs.Morpeh {
     [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     public readonly struct Entity : IEquatable<Entity> {
-        internal readonly long value;
-
-        // [ Id: 32 bits | Generation: 16 bits | WorldId: 8 bits | WorldGeneration: 8 bits ]
-        internal Entity(int worldId, int worldGeneration, int id, ushort generation) {
-            value = ((id & 0xFFFFFFFFL) << 32) | ((generation & 0xFFFFL) << 16) | ((worldId & 0xFFL) << 8) | (worldGeneration & 0xFFL);
-        }
-
-        [ShowInInspector]
-        public int Id {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => (int)((this.value >> 32) & 0xFFFFFFFF);
-        }
-
-        [ShowInInspector]
-        public ushort Generation {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => (ushort)((this.value >> 16) & 0xFFFF);
-        }
-
-        [ShowInInspector]
-        public int WorldId {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => (int)((this.value >> 8) & 0xFF);
-        }
-
-        [ShowInInspector]
-        public int WorldGeneration {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => (int)(this.value & 0xFF);
+        public readonly int id;
+        internal readonly int generation;
+        
+        public Entity(int id, int generation) {
+            this.id         = id;
+            this.generation = generation;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Entity lhs, Entity rhs) {
-            return lhs.value == rhs.value;
+            return lhs.id == rhs.id && lhs.generation == rhs.generation;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Entity lhs, Entity rhs) {
-            return lhs.value != rhs.value;
+            return lhs.id != rhs.id || lhs.generation != rhs.generation;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(Entity other) {
-            return this.value == other.value;
+            return other.id == this.id && other.generation == this.generation;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -66,15 +44,25 @@ namespace Scellecs.Morpeh {
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode() {
-            return this.value.GetHashCode();
+            return ((long)this.id + this.generation).GetHashCode();
         }
         
         public int CompareTo(Entity other) {
-            return this.Id.CompareTo(other.Id);
+            return this.id.CompareTo(other.id);
         }
 
         public override string ToString() {
-            return $"Entity: Id={this.Id}, Generation={this.Generation}, WorldId={this.WorldId}, WorldGeneration={this.WorldGeneration}";
+            return $"{this.id}:{this.generation}";
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Entity Create() => World.Default.CreateEntity();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Remove() => World.Default.RemoveEntity(this);
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsDisposed() => World.Default.EntityIsDisposed(this);
+        
     }
 }

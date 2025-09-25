@@ -18,6 +18,17 @@ namespace Scellecs.Morpeh {
     [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     public sealed class Filter {
+
+        [PublicAPI]
+        public static FilterBuilder With<T>() where T : struct, IComponent {
+            return FilterBuilder.Create(World.Default).With<T>();
+        }
+
+        [PublicAPI]
+        public static FilterBuilder Without<T>() where T : struct, IComponent {
+            return FilterBuilder.Create(World.Default).Without<T>();
+        }
+        
 #if MORPEH_BURST
         [Il2CppSetOption(Option.NullChecks, false)]
         [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
@@ -230,7 +241,7 @@ namespace Scellecs.Morpeh {
                 return false;
             }
             
-            var archetype = this.world.entities[entity.Id].currentArchetype;
+            var archetype = this.world.entities[entity.id].currentArchetype;
             return archetype != null && this.archetypeHashesMap.Has(archetype.hash.GetValue());
         }
         
