@@ -122,8 +122,8 @@ internal class ComponentsSourceGenerator : IIncrementalGenerator
 
                    [MethodImpl(MethodImplOptions.AggressiveInlining)]
                    [Il2CppSetOption(Option.NullChecks, false)]
-                   public static {{m.name}} First() {
-                       return stash.GetEnumerator().Current;
+                   public static ref {{m.name}} First() {
+                       return ref stash.GetEnumerator().Current;
                    }
 
                    [MethodImpl(MethodImplOptions.AggressiveInlining)]
