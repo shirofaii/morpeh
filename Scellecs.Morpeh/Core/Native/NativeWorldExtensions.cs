@@ -23,11 +23,11 @@ namespace Scellecs.Morpeh.Native {
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe bool Has(this NativeWorld nativeWorld, in Entity entity) {
-            if (entity.id < 0 || entity.id >= *nativeWorld.entitiesCapacity) {
+            if (entity.Id < 0 || entity.Id >= *nativeWorld.entitiesCapacity) {
                 return false;
             }
             
-            return entity.generation == nativeWorld.entitiesGens[entity.id];
+            return entity.generation == nativeWorld.entitiesGens[entity.Id];
         }
     }
 }

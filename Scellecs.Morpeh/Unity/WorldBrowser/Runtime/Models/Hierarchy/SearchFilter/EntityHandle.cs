@@ -8,11 +8,11 @@ namespace Scellecs.Morpeh.WorldBrowser.Filter {
         internal World World => World.Default;
         internal Archetype Archetype => this.World.entities[this.entity.Id].currentArchetype;
         internal EntityData EntityData => this.World.entities[entity.Id];
-        internal bool IsValid => !this.World.IsNullOrDisposed() && !this.World.IsDisposed(this.entity);
+        internal bool IsValid => !this.World.IsNullOrDisposed() && !this.entity.IsDisposed();
 
         public EntityHandle(Entity entity) {
-            var world = entity.GetWorld();
-            if (!world.IsNullOrDisposed() && !world.IsDisposed(entity)) {
+            var world = World.Default!;
+            if (!world.IsNullOrDisposed() && !entity.IsDisposed()) {
                 this.entity = entity;
                 this.archetypeHash = world.entities[entity.Id].currentArchetype.hash.GetValue();
             }
@@ -27,7 +27,7 @@ namespace Scellecs.Morpeh.WorldBrowser.Filter {
         }
 
         public override string ToString() {
-            return $"{entity.id}:{entity.generation}, IsValid:{IsValid}, archetypeHash:{archetypeHash}";
+            return $"{entity.Id}:{entity.generation}, IsValid:{IsValid}, archetypeHash:{archetypeHash}";
         }
     }
 }

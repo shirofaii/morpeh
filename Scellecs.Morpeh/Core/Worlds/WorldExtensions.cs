@@ -104,8 +104,6 @@ namespace Scellecs.Morpeh {
             World.worlds[World.worldsCount] = null;
             World.worldsIndices[world.identifier] = 0;
             World.defaultWorld = World.worldsCount > 0 ? World.worlds[0] : null;
-            world.identifier = -1;
-            world.generation = -1;
         }
 
 #if MORPEH_UNITY && !MORPEH_DISABLE_AUTOINITIALIZATION
@@ -351,7 +349,7 @@ namespace Scellecs.Morpeh {
                 var index = entityData.indexInCurrentArchetype;
                 entityData.currentArchetype.RemoveEntityAtIndex(index);
                 
-                var entityIndex = entityData.currentArchetype.entities[index].id;
+                var entityIndex = entityData.currentArchetype.entities[index].Id;
                 world.entities[entityIndex].indexInCurrentArchetype = index;
                 
                 world.TryScheduleArchetypeForRemoval(entityData.currentArchetype);
@@ -485,7 +483,7 @@ namespace Scellecs.Morpeh {
                 var index = entityData.indexInCurrentArchetype;
                 entityData.currentArchetype.RemoveEntityAtIndex(index);
                 
-                var entityIndex = entityData.currentArchetype.entities[index].id;
+                var entityIndex = entityData.currentArchetype.entities[index].Id;
                 world.entities[entityIndex].indexInCurrentArchetype = index;
                 
                 world.TryScheduleArchetypeForRemoval(entityData.currentArchetype);

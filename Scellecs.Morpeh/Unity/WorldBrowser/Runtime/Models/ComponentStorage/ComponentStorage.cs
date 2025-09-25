@@ -105,17 +105,11 @@ namespace Scellecs.Morpeh.WorldBrowser {
         private bool TryGetDefinition(Entity entity, int typeId, out ExtendedComponentId.InternalTypeDefinition def) {
             def = ExtendedComponentId.Get(typeId);
 
-            if (Application.isPlaying == false) {
+            if (!Application.isPlaying) {
                 return false;
             }
 
-            var isValid = !entity.GetWorld().IsNullOrDisposed() && !entity.GetWorld().IsDisposed(entity);
-
-            if (!isValid) {
-                return false;
-            }
-
-            return true;
+            return !entity.IsDisposed();
         }
 
         private void AddComponent(Type type, int typeId) {

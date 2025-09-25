@@ -29,7 +29,7 @@
         public static Entity CreateEntity(this World world, string name) {
             var entity = world.CreateEntity();
 #if DEBUG
-            world.SetDebugLabel(entity.id, name);
+            world.SetDebugLabel(entity.Id, name);
 #endif
             return entity;
         }
@@ -69,11 +69,11 @@
                 return;
             }
             
-            ref var entityData = ref world.entities[entity.id];
+            ref var entityData = ref world.entities[entity.Id];
             
             // Clear new components if entity is transient
             
-            if (world.dirtyEntities.Remove(entity.id)) {
+            if (world.dirtyEntities.Remove(entity.Id)) {
                 var addedComponentsCount = entityData.addedComponentsCount;
                 
                 for (var i = 0; i < addedComponentsCount; i++) {
@@ -90,9 +90,9 @@
                 }
             }
             
-            world.disposedEntities.Add(entity.id);
+            world.disposedEntities.Add(entity.Id);
             
-            world.IncrementGeneration(entity.id);
+            world.IncrementGeneration(entity.Id);
             --world.entitiesCount;
         }
 
@@ -101,9 +101,9 @@
         public static bool EntityIsDisposed(this World world, Entity entity) {
             world.ThreadSafetyCheck();
             
-            return entity.id <= 0 ||
-                   entity.id >= world.entitiesCapacity ||
-                   world.entitiesGens[entity.id] != entity.generation;
+            return entity.Id <= 0 ||
+                   entity.Id >= world.entitiesCapacity ||
+                   world.entitiesGens[entity.Id] != entity.generation;
         }
 
         [PublicAPI]
@@ -111,9 +111,9 @@
         public static bool Has(this World world, Entity entity) {
             world.ThreadSafetyCheck();
             
-            return entity.id > 0 &&
-                   entity.id < world.entitiesCapacity &&
-                   world.entitiesGens[entity.id] == entity.generation;
+            return entity.Id > 0 &&
+                   entity.Id < world.entitiesCapacity &&
+                   world.entitiesGens[entity.Id] == entity.generation;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

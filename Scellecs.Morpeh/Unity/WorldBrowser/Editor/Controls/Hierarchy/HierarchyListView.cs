@@ -1,6 +1,7 @@
 ﻿#if UNITY_EDITOR
 using System.Collections.Generic;
 using System.Linq;
+using Scellecs.Morpeh.WorldBrowser.Filter;
 using UnityEngine.UIElements;
 
 namespace Scellecs.Morpeh.WorldBrowser.Editor {

@@ -23,7 +23,7 @@ namespace Scellecs.Morpeh.Providers {
         [PropertyOrder(-1)]
         [ReadOnly]
 #endif
-        private int EntityID => this.cachedEntity.IsDisposed() == false ? this.cachedEntity.id : -1;
+        private int EntityID => this.cachedEntity.IsDisposed() == false ? this.cachedEntity.Id : -1;
 
         protected internal Entity cachedEntity;
 
@@ -150,5 +150,9 @@ namespace Scellecs.Morpeh.Providers {
         private Editor.EntityViewer entityViewer = new Editor.EntityViewer();
 #endif
 #pragma warning restore 0618
+        
+        private void OnDestroy() {
+            this.cachedEntity.Remove();
+        }
     }
 }

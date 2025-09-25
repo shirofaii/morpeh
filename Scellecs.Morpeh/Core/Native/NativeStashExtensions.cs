@@ -32,12 +32,12 @@ namespace Scellecs.Morpeh.Native {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Has<TNative>(this NativeStash<TNative> nativeStash, Entity entity) where TNative : unmanaged, IComponent {
-            return nativeStash.world.Has(in entity) && nativeStash.map.IndexOf(entity.id) != -1;
+            return nativeStash.world.Has(in entity) && nativeStash.map.IndexOf(entity.Id) != -1;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref TNative Get<TNative>(this ref NativeStash<TNative> nativeStash, Entity entity) where TNative : unmanaged, IComponent {
-            var idx = nativeStash.map.IndexOf(entity.id);
+            var idx = nativeStash.map.IndexOf(entity.Id);
             if (Hint.Likely(idx >= 0)) {
                 return ref nativeStash.data[idx];
             }
@@ -47,7 +47,7 @@ namespace Scellecs.Morpeh.Native {
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref TNative Get<TNative>(this ref NativeStash<TNative> nativeStash, Entity entity, out bool exists) where TNative : unmanaged, IComponent {
-            var idx = nativeStash.map.IndexOf(entity.id);
+            var idx = nativeStash.map.IndexOf(entity.Id);
             exists = idx >= 0 && nativeStash.world.Has(entity);
             if (exists) {
                 return ref nativeStash.data[idx];

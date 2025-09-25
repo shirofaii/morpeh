@@ -26,7 +26,7 @@ namespace Scellecs.Morpeh.Editor {
                     return this.componentViews;
                 }
 
-                var archetype = this.world.entities[entity.id].currentArchetype;
+                var archetype = this.world.entities[entity.Id].currentArchetype;
                 if (archetype == null) {
                     return this.componentViews;
                 }

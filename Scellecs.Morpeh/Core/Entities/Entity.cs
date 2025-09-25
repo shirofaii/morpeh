@@ -14,27 +14,27 @@ namespace Scellecs.Morpeh {
     [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     public readonly struct Entity : IEquatable<Entity> {
-        public readonly int id;
+        public readonly int Id;
         internal readonly int generation;
         
         public Entity(int id, int generation) {
-            this.id         = id;
+            this.Id         = id;
             this.generation = generation;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Entity lhs, Entity rhs) {
-            return lhs.id == rhs.id && lhs.generation == rhs.generation;
+            return lhs.Id == rhs.Id && lhs.generation == rhs.generation;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Entity lhs, Entity rhs) {
-            return lhs.id != rhs.id || lhs.generation != rhs.generation;
+            return lhs.Id != rhs.Id || lhs.generation != rhs.generation;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(Entity other) {
-            return other.id == this.id && other.generation == this.generation;
+            return other.Id == this.Id && other.generation == this.generation;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -44,15 +44,15 @@ namespace Scellecs.Morpeh {
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode() {
-            return ((long)this.id + this.generation).GetHashCode();
+            return ((long)this.Id + this.generation).GetHashCode();
         }
         
         public int CompareTo(Entity other) {
-            return this.id.CompareTo(other.id);
+            return this.Id.CompareTo(other.Id);
         }
 
         public override string ToString() {
-            return $"{this.id}:{this.generation}";
+            return $"{this.Id}:{this.generation}";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

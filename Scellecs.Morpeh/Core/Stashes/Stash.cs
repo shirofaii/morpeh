@@ -71,7 +71,7 @@ namespace Scellecs.Morpeh {
                 InvalidGetOperationException.ThrowDisposedEntity(entity, this.type);
             }
             
-            if (this.map.TryGetIndex(entity.id, out var dataIndex)) {
+            if (this.map.TryGetIndex(entity.Id, out var dataIndex)) {
                 return ref this.data[dataIndex];
             }
             
@@ -97,7 +97,7 @@ namespace Scellecs.Morpeh {
                 InvalidGetOperationException.ThrowDisposedEntity(entity, this.type);
             }
             
-            if (this.map.TryGetIndex(entity.id, out var dataIndex)) {
+            if (this.map.TryGetIndex(entity.Id, out var dataIndex)) {
                 exist = true;
                 return ref this.data[dataIndex];
             }
@@ -114,8 +114,8 @@ namespace Scellecs.Morpeh {
                 InvalidSetOperationException.ThrowDisposedEntity(entity, this.type);
             }
             
-            if (!this.map.IsKeySet(entity.id, out var slotIndex)) {
-                slotIndex = this.map.TakeSlot(entity.id, out var resized);
+            if (!this.map.IsKeySet(entity.Id, out var slotIndex)) {
+                slotIndex = this.map.TakeSlot(entity.Id, out var resized);
                 
                 if (resized) {
                     ArrayHelpers.GrowNonInlined(ref this.data, this.map.capacity);
@@ -124,7 +124,7 @@ namespace Scellecs.Morpeh {
 #endif
                 }
                 
-                this.world.TransientChangeAddComponent(entity.id, ref this.typeInfo);
+                this.world.TransientChangeAddComponent(entity.Id, ref this.typeInfo);
             }
             
             this.data[slotIndex] = default;
@@ -141,8 +141,8 @@ namespace Scellecs.Morpeh {
                 InvalidSetOperationException.ThrowDisposedEntity(entity, this.type);
             }
             
-            if (!this.map.IsKeySet(entity.id, out var slotIndex)) {
-                slotIndex = this.map.TakeSlot(entity.id, out var resized);
+            if (!this.map.IsKeySet(entity.Id, out var slotIndex)) {
+                slotIndex = this.map.TakeSlot(entity.Id, out var resized);
                 
                 if (resized) {
                     ArrayHelpers.GrowNonInlined(ref this.data, this.map.capacity);
@@ -151,7 +151,7 @@ namespace Scellecs.Morpeh {
 #endif
                 }
                 
-                this.world.TransientChangeAddComponent(entity.id, ref this.typeInfo);
+                this.world.TransientChangeAddComponent(entity.Id, ref this.typeInfo);
                 exist = false;
             }
             
@@ -168,8 +168,8 @@ namespace Scellecs.Morpeh {
                 InvalidSetOperationException.ThrowDisposedEntity(entity, this.type);
             }
             
-            if (!this.map.IsKeySet(entity.id, out var slotIndex)) {
-                slotIndex = this.map.TakeSlot(entity.id, out var resized);
+            if (!this.map.IsKeySet(entity.Id, out var slotIndex)) {
+                slotIndex = this.map.TakeSlot(entity.Id, out var resized);
                 
                 if (resized) {
                     ArrayHelpers.GrowNonInlined(ref this.data, this.map.capacity);
@@ -178,7 +178,7 @@ namespace Scellecs.Morpeh {
 #endif
                 }
                 
-                this.world.TransientChangeAddComponent(entity.id, ref this.typeInfo);
+                this.world.TransientChangeAddComponent(entity.Id, ref this.typeInfo);
             }
             
             this.data[slotIndex] = value;
@@ -192,8 +192,8 @@ namespace Scellecs.Morpeh {
                 InvalidRemoveOperationException.ThrowDisposedEntity(entity, this.type);
             }
             
-            if (this.map.Remove(entity.id, out var slotIndex)) {
-                this.world.TransientChangeRemoveComponent(entity.id, ref this.typeInfo);
+            if (this.map.Remove(entity.Id, out var slotIndex)) {
+                this.world.TransientChangeRemoveComponent(entity.Id, ref this.typeInfo);
 #if !MORPEH_DISABLE_COMPONENT_DISPOSE
                 this.componentDispose?.Invoke(ref this.data[slotIndex]);
 #endif
@@ -234,7 +234,7 @@ namespace Scellecs.Morpeh {
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void IStash.Clean(Entity entity) {
-            if (this.map.Remove(entity.id, out var slotIndex)) {
+            if (this.map.Remove(entity.Id, out var slotIndex)) {
 #if !MORPEH_DISABLE_COMPONENT_DISPOSE
                 this.componentDispose?.Invoke(ref this.data[slotIndex]);
 #endif
@@ -254,11 +254,11 @@ namespace Scellecs.Morpeh {
                 InvalidMigrateOperationException.ThrowDisposedEntityTo(to, this.type);
             }
             
-            if (this.map.TryGetIndex(from.id, out var fromSlotIndex)) {
+            if (this.map.TryGetIndex(from.Id, out var fromSlotIndex)) {
                 ref var component = ref this.data[fromSlotIndex];
                 
-                if (!this.map.IsKeySet(to.id, out var toSlotIndex)) {
-                    toSlotIndex = this.map.TakeSlot(to.id, out var resized);
+                if (!this.map.IsKeySet(to.Id, out var toSlotIndex)) {
+                    toSlotIndex = this.map.TakeSlot(to.Id, out var resized);
                     
                     if (resized) {
                         ArrayHelpers.GrowNonInlined(ref this.data, this.map.capacity);
@@ -268,14 +268,14 @@ namespace Scellecs.Morpeh {
                     }
                     
                     this.data[toSlotIndex] = component;
-                    this.world.TransientChangeAddComponent(to.id, ref this.typeInfo);
+                    this.world.TransientChangeAddComponent(to.Id, ref this.typeInfo);
                 } else if (overwrite) {
                     this.data[toSlotIndex] = component;
                 }
                 
-                if (this.map.Remove(from.id, out _)) {
+                if (this.map.Remove(from.Id, out _)) {
                     this.data[fromSlotIndex] = default;
-                    this.world.TransientChangeRemoveComponent(from.id, ref this.typeInfo);
+                    this.world.TransientChangeRemoveComponent(from.Id, ref this.typeInfo);
                 }
             }
         }
@@ -288,7 +288,7 @@ namespace Scellecs.Morpeh {
                 InvalidHasOperationException.ThrowDisposedEntity(entity, this.type);
             }
             
-            return this.map.Has(entity.id);
+            return this.map.Has(entity.Id);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -1,4 +1,5 @@
 ﻿#if UNITY_EDITOR
+using Scellecs.Morpeh.WorldBrowser.Filter;
 using UnityEngine.UIElements;
 namespace Scellecs.Morpeh.WorldBrowser.Editor {
     internal sealed class HierarchyListViewItem : VisualElement {
@@ -30,8 +31,8 @@ namespace Scellecs.Morpeh.WorldBrowser.Editor {
 
         internal void Bind(EntityHandle entityHandle)
         {
-            this.leftLabel.text = World.Default.GetDebugLabel(entityHandle.entity.id);
-            this.rightLabel.text = $"{entityHandle.entity.id}:{entityHandle.entity.generation}";
+            this.leftLabel.text = World.Default.GetDebugLabel(entityHandle.entity.Id);
+            this.rightLabel.text = $"{entityHandle.entity.Id}:{entityHandle.entity.generation}";
         }
 
         internal void Reset() {

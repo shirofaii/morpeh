@@ -51,10 +51,8 @@
                 typeInfo = ComponentId<T>.info,
                 type = typeof(T),
                 entityAddComponent = (entity) => {
-                    var stash = entity.GetWorld().GetStash<T>();
-                    if (!stash.Has(entity)) {
-                        stash.Add(entity);
-                    }
+                    var stash = World.Default.GetStash<T>();
+                    stash.Set(entity);
                 },
                 entityGetComponentBoxed = (entity) => {
                     var stash = World.GetStash<T>();
