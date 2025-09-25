@@ -16,6 +16,10 @@
         internal int[] addedComponents;
         internal int[] removedComponents;
         
+#if DEBUG
+        internal string debugLabel;
+#endif        
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void Initialize() {
             this.currentArchetype  = null;

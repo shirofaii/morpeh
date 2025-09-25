@@ -6,7 +6,6 @@ namespace Scellecs.Morpeh.Utils.Editor {
     using System.Reflection;
     using Scellecs.Morpeh;
     using Scellecs.Morpeh.Providers;
-    using Scellecs.Morpeh.Systems;
     using UnityEditor;
     using UnityEngine;
     using Object = UnityEngine.Object;
@@ -107,12 +106,6 @@ namespace Scellecs.Morpeh.Utils.Editor {
                         else if (InheritsFrom(type, typeof(ISystem))) {
                             SelectAndSaveIcon(monoImporter, iconU);
                         }
-                        // else if (InheritsFrom(type, typeof(BaseGlobalVariable<>))) {
-                        //     SelectAndSaveIcon(monoImporter, iconV);
-                        // }
-                        // else if (InheritsFrom(type, typeof(BaseGlobalEvent<>))) {
-                        //     SelectAndSaveIcon(monoImporter, iconE);
-                        // }
                     }
                 }
 

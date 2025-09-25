@@ -27,10 +27,7 @@ namespace Sirenix.OdinInspector {
         public HorizontalGroupAttribute(string name, float width = 0f) {
         }
     }
-
-    internal class HideLabelAttribute : Attribute {
-    }
-
+    
     internal class HideMonoScriptAttribute : Attribute {
     }
 
@@ -51,9 +48,6 @@ namespace Sirenix.OdinInspector {
     }
 
     internal class PropertySpaceAttribute : Attribute {
-    }
-
-    internal class InlinePropertyAttribute : Attribute {
     }
 
     internal class DisableContextMenuAttribute : Attribute {
@@ -92,11 +86,7 @@ namespace Sirenix.OdinInspector {
         public LabelTextAttribute(string text) {
         }
     }
-
-    internal class ButtonAttribute : Attribute {
-        public string Name;
-    }
-
+    
     internal enum InfoMessageType {
         Error,
     }

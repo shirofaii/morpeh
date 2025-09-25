@@ -54,11 +54,12 @@ namespace Scellecs.Morpeh.Providers {
         }
 
         public void SetEntity(Entity entity = default) {
+            var label = $"[{gameObject.name}]";
             if (this.cachedEntity.IsDisposed()) {
                 var instanceId = this.gameObject.GetInstanceID();
                 if (map.TryGetValue(instanceId, out var item)) {
                     if (item.entity.IsDisposed()) {
-                        var e = entity == default ? World.Default.CreateEntity() : entity;
+                        var e = entity == default ? World.Default.CreateEntity(label) : entity;
                         this.cachedEntity = item.entity = e;
                     }
                     else {
@@ -68,7 +69,7 @@ namespace Scellecs.Morpeh.Providers {
                     map.Set(instanceId, item, out _);
                 }
                 else {
-                    var e = entity == default ? World.Default.CreateEntity() : entity;
+                    var e = entity == default ? World.Default.CreateEntity(label) : entity;
                     this.cachedEntity = item.entity = e;
                     item.refCounter   = 1;
                     map.Add(instanceId, item, out _);

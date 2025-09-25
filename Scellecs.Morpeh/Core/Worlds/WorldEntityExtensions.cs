@@ -25,6 +25,16 @@
         }
 
         [PublicAPI]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Entity CreateEntity(this World world, string name) {
+            var entity = world.CreateEntity();
+#if DEBUG
+            world.SetDebugLabel(entity.id, name);
+#endif
+            return entity;
+        }
+
+        [PublicAPI]
         public static Entity GetEntity(this World world, int id) {
             return id == 0 ? default : world.GetEntityAtIndex(id);
         }
@@ -110,5 +120,17 @@
         internal static Entity GetEntityAtIndex(this World world, int entityId) {
             return new Entity(entityId, world.entitiesGens[entityId]);
         }
+        
+#if DEBUG
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void SetDebugLabel(this World world, int entityId, string label) {
+            world.entities[entityId].debugLabel = label;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetDebugLabel(this World world, int entityId) {
+            return world.entities[entityId].debugLabel;
+        }
+#endif
     }
 }

@@ -44,7 +44,7 @@ namespace Scellecs.Morpeh {
     [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     public static class ComponentId<T> where T : struct, IComponent {
-        internal static TypeInfo info;
+        public static TypeInfo info;
         internal static bool initialized;
 
         public static int StashSize;
@@ -53,9 +53,9 @@ namespace Scellecs.Morpeh {
             Warmup();
         }
 
-        public static void Warmup() {
+        public static int Warmup() {
             if (initialized) {
-                return;
+                return info.id;
             }
             
             initialized = true;
@@ -72,6 +72,7 @@ namespace Scellecs.Morpeh {
 #if MORPEH_GENERATE_ALL_EXTENDED_IDS
             ExtendedComponentId.Generate<T>();
 #endif
+            return info.id;
         }
     }
 }
