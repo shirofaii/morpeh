@@ -28,7 +28,7 @@ public class EntityDisposalTests {
         
         var newEntity = this.world.CreateEntity();
         Assert.NotEqual(newEntity, entity);
-        Assert.NotEqual(entity.id, newEntity.id);
+        Assert.NotEqual(entity.Id, newEntity.Id);
     }
     
     [Fact]
@@ -44,7 +44,7 @@ public class EntityDisposalTests {
         
         var newEntity = this.world.CreateEntity();
         Assert.NotEqual(newEntity, entity);
-        Assert.NotEqual(entity.id, newEntity.id);
+        Assert.NotEqual(entity.Id, newEntity.Id);
     }
     
     [Fact]

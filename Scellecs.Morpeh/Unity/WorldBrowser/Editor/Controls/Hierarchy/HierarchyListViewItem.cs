@@ -29,10 +29,10 @@ namespace Scellecs.Morpeh.WorldBrowser.Editor {
             this.Add(rightHalf);
         }
 
-        internal void Bind(EntityHandle entityHandle)
+        internal void Bind(Entity entity)
         {
-            this.leftLabel.text = World.Default.GetDebugLabel(entityHandle.entity.Id);
-            this.rightLabel.text = $"{entityHandle.entity.Id}:{entityHandle.entity.generation}";
+            this.leftLabel.text = World.Default.GetDebugLabel(entity.Id);
+            this.rightLabel.text = $"{entity.Id}:{entity.generation}";
         }
 
         internal void Reset() {

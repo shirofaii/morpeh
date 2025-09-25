@@ -92,7 +92,7 @@ public class FilterDisposalTests {
         this.world.Commit();
 
         var filterArchetype = filter.archetypes[0];
-        var entArchetype = world.entities[ent.id].currentArchetype;
+        var entArchetype = this.world.entities[ent.Id].currentArchetype;
         Assert.NotNull(filterArchetype);
         Assert.NotNull(entArchetype);
         Assert.Equal(filterArchetype.hash, entArchetype.hash);

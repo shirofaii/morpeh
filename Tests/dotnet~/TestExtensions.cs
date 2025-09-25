@@ -46,7 +46,7 @@ public static class TestExtensions {
             return default(ArchetypeHash);
         }
 
-        var archetype = world.entities[entity.id].currentArchetype;
+        var archetype = world.entities[entity.Id].currentArchetype;
         return archetype?.hash ?? default(ArchetypeHash);
     }
 }

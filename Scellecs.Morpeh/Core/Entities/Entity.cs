@@ -1,5 +1,6 @@
 namespace Scellecs.Morpeh {
     using System;
+    using System.Collections.Generic;
     using Sirenix.OdinInspector;
     using Unity.IL2CPP.CompilerServices;
     using System.Runtime.CompilerServices;
@@ -14,9 +15,9 @@ namespace Scellecs.Morpeh {
     [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     public readonly struct Entity : IEquatable<Entity> {
-        public readonly int Id;
-        internal readonly int generation;
-        
+        public readonly   int                 Id;
+        internal readonly int                 generation;
+
         public Entity(int id, int generation) {
             this.Id         = id;
             this.generation = generation;
