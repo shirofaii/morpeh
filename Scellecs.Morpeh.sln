@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Layout", "Layout~\Layout.cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaticGenerators", "StaticGenerators~\StaticGenerators.csproj", "{8DB198DD-4193-481E-9731-2F30DD80BB1C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "morpeh-codegen", "Codegen\morpeh-codegen.csproj", "{1E0C22C1-B2DB-47BB-ACD6-05BE1993BB7F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{8DB198DD-4193-481E-9731-2F30DD80BB1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DB198DD-4193-481E-9731-2F30DD80BB1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DB198DD-4193-481E-9731-2F30DD80BB1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E0C22C1-B2DB-47BB-ACD6-05BE1993BB7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E0C22C1-B2DB-47BB-ACD6-05BE1993BB7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E0C22C1-B2DB-47BB-ACD6-05BE1993BB7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E0C22C1-B2DB-47BB-ACD6-05BE1993BB7F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
