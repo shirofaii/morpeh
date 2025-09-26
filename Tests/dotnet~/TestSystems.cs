@@ -9,7 +9,7 @@ public abstract class BaseTestSystem
     public bool isDisposed = false;
 }
 
-public class TestUpdateSystem : BaseTestSystem, ISystem {
+public class TestUpdateSystem : BaseTestSystem {
     public World World { get; set; }
 
     public void Dispose() {
@@ -30,7 +30,7 @@ public class TestUpdateSystem : BaseTestSystem, ISystem {
     }
 }
 
-public class TestFixedSystem : BaseTestSystem, IFixedSystem {
+public class TestFixedSystem : BaseTestSystem {
     public World World { get; set; }
 
     public void Dispose() { 
@@ -51,7 +51,7 @@ public class TestFixedSystem : BaseTestSystem, IFixedSystem {
     }
 }
 
-public class TestLateSystem : BaseTestSystem, ILateSystem {
+public class TestLateSystem : BaseTestSystem {
     public World World { get; set; }
 
     public void Dispose() {
@@ -72,7 +72,7 @@ public class TestLateSystem : BaseTestSystem, ILateSystem {
     }
 }
 
-public class TestCleanupSystem : BaseTestSystem, ICleanupSystem {
+public class TestCleanupSystem : BaseTestSystem {
     public World World { get; set; }
 
     public void Dispose() { 
