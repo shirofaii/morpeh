@@ -136,7 +136,7 @@ namespace Scellecs.Morpeh.Providers {
         private bool IsNotEntityProvider {
             get {
                 var type = this.GetType();
-                return type != typeof(EntityProvider);
+                return type != typeof(EntityProvider) && type.Name != "SerializedEntity";
             }
         }
 

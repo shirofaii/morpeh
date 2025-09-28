@@ -22,7 +22,37 @@ internal class LoopComponentsSourceGenerator : ISourceGenerator
         if(!(context.SyntaxContextReceiver is ComponentSyntaxReceiver receiver)) return;
 
         var src = GenerateEventsAndComponents(receiver.foundCmp);
-        context.AddSource($"MorpehLoop.Events.g.cs", SourceText.From(src, Encoding.UTF8));
+        var entityProviderSrc = this.GenerateDeserialization(receiver.foundCmp);
+        context.AddSource("MorpehLoop.Events.g.cs", SourceText.From(src, Encoding.UTF8));
+        context.AddSource("EntityProvider.Deserialization.g.cs", SourceText.From(entityProviderSrc, Encoding.UTF8));
+    }
+    
+    private string GenerateDeserialization(List<Cmp> receiverFoundCmp) {
+        var s = new StringBuilder();
+        s.Append("""
+                 using Scellecs.Morpeh;
+                 using System;
+                 using System.Runtime.CompilerServices;
+                 using Unity.IL2CPP.CompilerServices;
+                 using System.IO;
+                 
+                 public static class AllComponents {
+
+                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                 [Il2CppSetOption(Option.NullChecks, false)]
+                 public static void SetComponent(Entity entity, IComponent comp) {
+                     switch(comp) {
+                    
+                 """);
+        foreach (var cmp in receiverFoundCmp) {
+            s.Append($"        case {cmp.name} x: World.Default.GetStash<{cmp.name}>().Set(entity, x); return;\n");
+        }
+        s.Append("""
+                     }
+                 }
+                 }
+                 """);
+        return s.ToString();
     }
 
     private string GenerateEventsAndComponents(List<Cmp> list) {
