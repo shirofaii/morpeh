@@ -31,15 +31,11 @@ internal class LoopComponentsSourceGenerator : ISourceGenerator
         var s = new StringBuilder();
         s.Append("""
                  using Scellecs.Morpeh;
-                 using System;
                  using System.Runtime.CompilerServices;
-                 using Unity.IL2CPP.CompilerServices;
-                 using System.IO;
                  
                  public static class AllComponents {
 
                  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                 [Il2CppSetOption(Option.NullChecks, false)]
                  public static void SetComponent(Entity entity, IComponent comp) {
                      switch(comp) {
                     

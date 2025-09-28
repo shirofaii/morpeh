@@ -32,9 +32,11 @@ internal class SystemSourceGenerator : ISourceGenerator
 
         foreach (var system in receiver.found)
         {
+            var feature = system.symbol.ContainingType.ToDisplayString(nameOnly);
             var source = GenerateSystemSource(system);
+            
             var name = system.symbol.ToDisplayString(nameOnly);
-            context.AddSource($"{name}.g.cs", SourceText.From(source, Encoding.UTF8));
+            context.AddSource($"{feature}.{name}.g.cs", SourceText.From(source, Encoding.UTF8));
         }
         
         foreach (var g in receiver.found.GroupBy(x => x.symbol.ContainingType, SymbolEqualityComparer.Default))
