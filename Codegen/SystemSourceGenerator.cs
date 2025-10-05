@@ -7,53 +7,70 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
 [Generator]
-internal class SystemSourceGenerator : ISourceGenerator
+internal class SystemSourceGenerator : IIncrementalGenerator
 {
-    private struct System
+    private record System
     {
         public enum Type { Pre, Upd, Fix, Lat, Drw, Cln }
 
         public Type type;
-        public INamedTypeSymbol symbol;
         public string name;
         public string fieldName;
     }
     
-    public void Execute(GeneratorExecutionContext context)
-    {
-        if(context.Compilation.AssemblyName != "Assembly-CSharp") {
-            return;
-        }
+    private record Model {
+        public string name;
+        public EqArray<System> systems;
+        public string @namespace;
+    }
 
-        if (!(context.SyntaxContextReceiver is SystemSyntaxReceiver receiver))
-        {
-            return;
-        }
-
-        foreach (var system in receiver.found)
-        {
-            var feature = system.symbol.ContainingType.ToDisplayString(nameOnly);
-            var source = GenerateSystemSource(system);
-            
-            var name = system.symbol.ToDisplayString(nameOnly);
-            context.AddSource($"{feature}.{name}.g.cs", SourceText.From(source, Encoding.UTF8));
-        }
+    public void Initialize(IncrementalGeneratorInitializationContext context) {
+        var decls = context.SyntaxProvider.ForAttributeWithMetadataName(
+            fullyQualifiedMetadataName: "FeatureAttribute",
+            predicate: static (node, _) => node is ClassDeclarationSyntax,
+            transform: static (context, _) => Parse(context));
         
-        foreach (var g in receiver.found.GroupBy(x => x.symbol.ContainingType, SymbolEqualityComparer.Default))
+        context.RegisterSourceOutput(decls, SourceOutput);
+    }
+    
+    private static Model Parse(GeneratorAttributeSyntaxContext context) {
+        var symbol = (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.TargetNode)!;
+        var ns = symbol.ContainingNamespace;
+        return new Model {
+            @namespace = ns.IsGlobalNamespace ? "" : ns.ToDisplayString(),
+            name       = symbol.Name,
+            systems    = GetSystems(context),
+        };
+    }
+    private static EqArray<System> GetSystems(GeneratorAttributeSyntaxContext context) {
+        var result  = new EqArray<System>();
+        
+        return result;
+    }
+
+    private void SourceOutput(SourceProductionContext context, Model model)
+    {
+        var featureSource = GenerateFeatureSource(model);
+        context.AddSource($"{model.name}.g.cs", SourceText.From(featureSource, Encoding.UTF8));
+        
+        foreach (var system in model.systems)
         {
-            var source = GenerateFeatureSource(g.Key, g.ToList());
-            var name = g.Key.ToDisplayString(nameOnly);
-            context.AddSource($"{name}.g.cs", SourceText.From(source, Encoding.UTF8));
+            // var feature = system.symbol.ContainingType.ToDisplayString(nameOnly);
+            // var source = GenerateSystemSource(system);
+            //
+            // var name = system.symbol.ToDisplayString(nameOnly);
+            // context.AddSource($"{feature}.{name}.g.cs", SourceText.From(source, Encoding.UTF8));
         }
     }
 
-    private string GenerateFeatureSource(ISymbol feature, List<System> systems)
-    {
-        var namespaceBegin = feature.ContainingNamespace.IsGlobalNamespace ? ""
-            : "namespace " + feature.ContainingNamespace.ToDisplayString() + " {";
-        var namespaceEnd = feature.ContainingNamespace.IsGlobalNamespace ? "" : "}";
-        var featureName = feature.ToDisplayString(nameOnly);
-        
+    private string GenerateFeatureSource(Model model) {
+        var namespaceBegin = "";
+        var namespaceEnd = "";
+        if (model.@namespace != "") {
+            namespaceBegin = "namespace " + model.@namespace + " {";
+            namespaceEnd = "}";
+        }
+
         var s = new StringBuilder();
         
         s.Append($@"using Scellecs.Morpeh;
@@ -63,16 +80,16 @@ using Unity.IL2CPP.CompilerServices;
 using UnityEngine;
 
 {namespaceBegin}
-public partial class {featureName} : Feature {{
+public partial class {model.name} : Feature {{
 ");
-        GenerateFieldList(systems, s);
-        GenerateConstructor(featureName, systems, s);
-        GeneratePreUpdate(systems, s);
-        GenerateUpdate(systems, s);
-        GenerateFixedUpdate(systems, s);
-        GenerateLateUpdate(systems, s);
-        GenerateDrawUpdate(systems, s);
-        GenerateCleanupUpdate(systems, s);
+        GenerateFieldList(model.systems, s);
+        GenerateConstructor(model, s);
+        GeneratePreUpdate(model.systems, s);
+        GenerateUpdate(model.systems, s);
+        GenerateFixedUpdate(model.systems, s);
+        GenerateLateUpdate(model.systems, s);
+        GenerateDrawUpdate(model.systems, s);
+        GenerateCleanupUpdate(model.systems, s);
         s.Append($@"
 }}
 {namespaceEnd}
@@ -80,7 +97,7 @@ public partial class {featureName} : Feature {{
         return s.ToString();
     }
 
-    private void GenerateCleanupUpdate(List<System> systems, StringBuilder s)
+    private void GenerateCleanupUpdate(EqArray<System> systems, StringBuilder s)
     {
         s.Append(@"
 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -100,7 +117,7 @@ public void CleanupUpdate() {
         s.Append("}\n");
     }
     
-    private void GenerateLateUpdate(List<System> systems, StringBuilder s)
+    private void GenerateLateUpdate(EqArray<System> systems, StringBuilder s)
     {
         s.Append(@"
 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -119,7 +136,7 @@ public void LateUpdate() {
         s.Append("}\n");
     }
 
-    private void GenerateDrawUpdate(List<System> systems, StringBuilder s)
+    private void GenerateDrawUpdate(EqArray<System> systems, StringBuilder s)
     {
         s.Append(@"
 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -138,7 +155,7 @@ public void DrawUpdate(Camera cam) {
     }
 
     
-    private void GenerateFixedUpdate(List<System> systems, StringBuilder s)
+    private void GenerateFixedUpdate(EqArray<System> systems, StringBuilder s)
     {
         s.Append(@"
 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -157,7 +174,7 @@ public void FixedUpdate() {
         s.Append("}\n");
     }
     
-    private void GenerateUpdate(List<System> systems, StringBuilder s)
+    private void GenerateUpdate(EqArray<System> systems, StringBuilder s)
     {
         s.Append(@"
 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -178,7 +195,7 @@ public void Update() {
         s.Append("}\n");
     }
 
-    private void GeneratePreUpdate(List<System> systems, StringBuilder s)
+    private void GeneratePreUpdate(EqArray<System> systems, StringBuilder s)
     {
         s.Append(@"
 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -198,12 +215,12 @@ public void PreUpdate() {
     }
 
     
-    private void GenerateConstructor(string feature, List<System> systems, StringBuilder s)
+    private void GenerateConstructor(Model model, StringBuilder s)
     {
         s.Append($@"
-public {feature}() {{
+public {model.name}() {{
 ");
-        foreach (var sys in systems)
+        foreach (var sys in model.systems)
         {
             s.Append($"{sys.fieldName} = new {sys.name}();\n");
             s.Append($"{sys.fieldName}.Init();\n");
@@ -211,7 +228,7 @@ public {feature}() {{
         s.Append("}\n");
     }
 
-    private void GenerateFieldList(List<System> systems, StringBuilder s)
+    private void GenerateFieldList(EqArray<System> systems, StringBuilder s)
     {
         foreach (var sys in systems)
         {
@@ -224,97 +241,22 @@ public {feature}() {{
 
     private string GenerateSystemSource(System system)
     {
-        var symbol = system.symbol;
-        var feature = symbol.ContainingType.ToDisplayString(nameOnly);
-
-        var namespaceBegin = symbol.ContainingNamespace.IsGlobalNamespace ? ""
-            : "namespace " + symbol.ContainingNamespace.ToDisplayString() + " {";
-        var namespaceEnd = symbol.ContainingNamespace.IsGlobalNamespace ? "" : "}";
+        // var feature = symbol.ContainingType.ToDisplayString(nameOnly);
+        //
+        // var namespaceBegin = symbol.ContainingNamespace.IsGlobalNamespace ? ""
+        //     : "namespace " + symbol.ContainingNamespace.ToDisplayString() + " {";
+        // var namespaceEnd = symbol.ContainingNamespace.IsGlobalNamespace ? "" : "}";
         
         var s = new StringBuilder();
-        s.Append($@"using Scellecs.Morpeh;
-
-{namespaceBegin}
-public partial class {feature} {{
-public partial class {system.name} {{
-}}
-}}
-{namespaceEnd}
-");
+//         s.Append($@"using Scellecs.Morpeh;
+//
+// {namespaceBegin}
+// public partial class {feature} {{
+// public partial class {system.name} {{
+// }}
+// }}
+// {namespaceEnd}
+// ");
         return s.ToString();
-    }
-
-    public void Initialize(GeneratorInitializationContext context)
-    {
-        context.RegisterForSyntaxNotifications(() => new SystemSyntaxReceiver());
-    }
-
-    private class SystemSyntaxReceiver : ISyntaxContextReceiver
-    {
-        public readonly List<System> found = new List<System>();
-
-        public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
-        {
-            if (!(context.Node is ClassDeclarationSyntax decl) || decl.AttributeLists.Count == 0) return;
-
-            var symbol = context.SemanticModel.GetDeclaredSymbol(decl) as INamedTypeSymbol;
-            if(symbol == null) return;
-            
-            foreach (var attr in symbol.GetAttributes())
-            {
-                var name = symbol.ToDisplayString(nameOnly);
-                var sys = new System() {
-                    symbol = symbol,
-                    name = name,
-                    fieldName = "@" + name.FirstCharToLowerCase(),
-                };
-                switch (attr.AttributeClass.Name)
-                {
-                    case "PreAttribute":
-                        sys.type = System.Type.Pre;
-                        found.Add(sys);
-                        return;
-                    case "UpdAttribute":
-                        sys.type = System.Type.Upd;
-                        found.Add(sys);
-                        return;
-                    case "FixAttribute":
-                        sys.type = System.Type.Fix;
-                        found.Add(sys);
-                        return;
-                    case "LatAttribute":
-                        sys.type = System.Type.Lat;
-                        found.Add(sys);
-                        return;
-                    case "DrwAttribute":
-                        sys.type = System.Type.Drw;
-                        found.Add(sys);
-                        return;
-                    case "ClnAttribute":
-                        sys.type = System.Type.Cln;
-                        found.Add(sys);
-                        return;
-                }
-            }
-        }
-    }
-}
-
-public static class Ext
-{
-    public static string FirstCharToLowerCase(this string str)
-    {
-        if (!string.IsNullOrEmpty(str) && char.IsUpper(str[0]))
-            return str.Length == 1 ? char.ToLower(str[0]).ToString() : char.ToLower(str[0]) + str.Substring(1);
-
-        return str;
-    }
-    
-    public static string FirstCharToUpperCase(this string str)
-    {
-        if (!string.IsNullOrEmpty(str) && char.IsLower(str[0]))
-            return str.Length == 1 ? char.ToUpper(str[0]).ToString() : char.ToUpper(str[0]) + str.Substring(1);
-
-        return str;
     }
 }
