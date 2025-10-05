@@ -11,7 +11,7 @@ internal class SystemSourceGenerator : IIncrementalGenerator
 {
     private record System
     {
-        public enum Type { Pre, Upd, Fix, Lat, Drw, Cln }
+        public enum Type { Invalid, Pre, Upd, Fix, Lat, Drw, Cln }
 
         public Type type;
         public string name;
@@ -39,13 +39,37 @@ internal class SystemSourceGenerator : IIncrementalGenerator
         return new Model {
             @namespace = ns.IsGlobalNamespace ? "" : ns.ToDisplayString(),
             name       = symbol.Name,
-            systems    = GetSystems(context),
+            systems    = GetSystems(symbol),
         };
     }
-    private static EqArray<System> GetSystems(GeneratorAttributeSyntaxContext context) {
-        var result  = new EqArray<System>();
+    private static EqArray<System> GetSystems(INamedTypeSymbol symbol) {
+        var list = new List<System>();
+        foreach (var member in symbol.GetTypeMembers())
+        {
+            if (member.TypeKind != TypeKind.Class) continue;
+            
+            var name = member.ToDisplayString(nameOnly);
+            var type = System.Type.Invalid;
+            foreach (var attr in member.GetAttributes()) {
+                switch (attr.AttributeClass!.Name) {
+                    case "PreAttribute": type = System.Type.Pre; break;
+                    case "UpdAttribute": type = System.Type.Upd; break;
+                    case "FixAttribute": type = System.Type.Fix; break;
+                    case "LatAttribute": type = System.Type.Lat; break;
+                    case "DrwAttribute": type = System.Type.Drw; break;
+                    case "ClnAttribute": type = System.Type.Cln; break;
+                }
+            }
+            if(type == System.Type.Invalid) continue;
+            
+            list.Add(new System {
+                type      = type,
+                name      = name,
+                fieldName = "@" + name.FirstCharToLowerCase()
+            });
+        }
         
-        return result;
+        return new EqArray<System>(list.ToArray());
     }
 
     private void SourceOutput(SourceProductionContext context, Model model)
@@ -55,11 +79,8 @@ internal class SystemSourceGenerator : IIncrementalGenerator
         
         foreach (var system in model.systems)
         {
-            // var feature = system.symbol.ContainingType.ToDisplayString(nameOnly);
-            // var source = GenerateSystemSource(system);
-            //
-            // var name = system.symbol.ToDisplayString(nameOnly);
-            // context.AddSource($"{feature}.{name}.g.cs", SourceText.From(source, Encoding.UTF8));
+            var source = GenerateSystemSource(model, system);
+            context.AddSource($"{model.name}.{system.name}.g.cs", SourceText.From(source, Encoding.UTF8));
         }
     }
 
@@ -239,24 +260,45 @@ public {model.name}() {{
 
     private static readonly SymbolDisplayFormat nameOnly = new SymbolDisplayFormat(typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameOnly);
 
-    private string GenerateSystemSource(System system)
+    private string GenerateSystemSource(Model model, System system)
     {
-        // var feature = symbol.ContainingType.ToDisplayString(nameOnly);
-        //
-        // var namespaceBegin = symbol.ContainingNamespace.IsGlobalNamespace ? ""
-        //     : "namespace " + symbol.ContainingNamespace.ToDisplayString() + " {";
-        // var namespaceEnd = symbol.ContainingNamespace.IsGlobalNamespace ? "" : "}";
-        
+        var namespaceBegin = "";
+        var namespaceEnd   = "";
+        if (model.@namespace != "") {
+            namespaceBegin = "namespace " + model.@namespace + " {";
+            namespaceEnd   = "}";
+        }
+
         var s = new StringBuilder();
-//         s.Append($@"using Scellecs.Morpeh;
-//
-// {namespaceBegin}
-// public partial class {feature} {{
-// public partial class {system.name} {{
-// }}
-// }}
-// {namespaceEnd}
-// ");
+        s.Append($@"using Scellecs.Morpeh;
+
+{namespaceBegin}
+public partial class {model.name} {{
+public partial class {system.name} {{
+}}
+}}
+{namespaceEnd}
+");
         return s.ToString();
+    }
+}
+
+
+public static class Ext
+{
+    public static string FirstCharToLowerCase(this string str)
+    {
+        if (!string.IsNullOrEmpty(str) && char.IsUpper(str[0]))
+            return str.Length == 1 ? char.ToLower(str[0]).ToString() : char.ToLower(str[0]) + str.Substring(1);
+
+        return str;
+    }
+    
+    public static string FirstCharToUpperCase(this string str)
+    {
+        if (!string.IsNullOrEmpty(str) && char.IsLower(str[0]))
+            return str.Length == 1 ? char.ToUpper(str[0]).ToString() : char.ToUpper(str[0]) + str.Substring(1);
+
+        return str;
     }
 }
