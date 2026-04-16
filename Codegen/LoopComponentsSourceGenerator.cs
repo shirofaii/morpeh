@@ -71,11 +71,8 @@ internal class LoopComponentsSourceGenerator : ISourceGenerator
             s.Append($"{c.name}.stash = World.Default.GetStash<{c.name}>();\n");
         }
 
+/*
         s.Append("""
-                 }
-                 """);
-                         /*
-                         s.Append("""
                      }
 
                  [MethodImpl(MethodImplOptions.AggressiveInlining)]
