@@ -70,7 +70,12 @@ internal class LoopComponentsSourceGenerator : ISourceGenerator
         foreach(var c in list) {
             s.Append($"{c.name}.stash = World.Default.GetStash<{c.name}>();\n");
         }
+
         s.Append("""
+                 }
+                 """);
+                         /*
+                         s.Append("""
                      }
 
                  [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -132,7 +137,7 @@ internal class LoopComponentsSourceGenerator : ISourceGenerator
                 s.AppendLine("}");
             }
         }
-
+*/
         s.Append("""
 
                  }

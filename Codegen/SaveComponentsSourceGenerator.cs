@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System.Linq;
 
+/*
 [Generator]
 internal class SaveComponentsSourceGenerator : IIncrementalGenerator
 {
@@ -273,3 +274,4 @@ internal class SaveComponentsSourceGenerator : IIncrementalGenerator
         }
     }
 }
+*/
